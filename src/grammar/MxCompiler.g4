@@ -13,14 +13,14 @@ expr : expr '*' expr
      | ID '=' expr
      | INT | ID;
 
-announce : TYPE_NAME ID;
+announce : (TYPE_NAME|TYPE_INT) ID;
 
-func_main : 'int main()' '{' sentence* '}';
+func_main : TYPE_INT 'main()' '{' sentence* '}';
 func_list : '(' announce (',' announce)* ')' | '()';
-func_ret : TYPE_NAME ID  func_list  '{' sentence* '}' ;
+func_ret : (TYPE_NAME | TYPE_INT) ID  func_list  '{' sentence* '}' ;
 func_void : 'void' ID  func_list   '{' sentence* '}' ;
 
-TYPE_NAME :  'bool' | 'string' | TYPE_INT;
+TYPE_NAME :  'bool' | 'string';
 TYPE_INT : 'int';
 INT : [1-9] [0-9]* | '0';
 
