@@ -3,24 +3,31 @@ grammar MxCompiler;
     package antlr;
 }
 
-file : sentence+;
+file : (func_ret|func_void)* func_main;
 sentence : expr ';';
 
 expr : expr '*' expr
      | expr '/' expr
      | expr '+' expr
      | expr '-' expr
-     | NAME '=' expr
-     | INT | FLOAT | NAME;
+     | ID '=' expr
+     | INT | ID;
 
+announce : TYPE_NAME ID;
+
+func_main : 'int main()' '{' sentence* '}';
+func_list : '(' announce (',' announce)* ')' | '()';
+func_ret : TYPE_NAME ID  func_list  '{' sentence* '}' ;
+func_void : 'void' ID  func_list   '{' sentence* '}' ;
+
+TYPE_NAME :  'bool' | 'string' | TYPE_INT;
+TYPE_INT : 'int';
 INT : [1-9] [0-9]* | '0';
-
-FLOAT : ([0-9]+) '.'
-      | ([0-9]*) '.' ([0-9]+);
 
 fragment LETTER : [0-9a-zA-Z] | '_';
 fragment START_LETTER : [a-zA-Z] | '_';
-NAME : START_LETTER LETTER* ;
+ID : START_LETTER LETTER* ;
+
 
 
 
