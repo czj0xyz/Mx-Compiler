@@ -3,47 +3,77 @@ grammar MxCompiler;
     package antlr;
 }
 
-file : (func_ret|func_void)* func_main;
-sentence : expr ';'
-         | assignment ';'
-         | if
-         | BREAK ';'
-         | CONTINUE ';'
-         | while
-         | for;
-block : sentence | ';' | ('{' sentence* '}');
+program : def* EOF;
 
-expr : expr '*' expr
-     | expr '/' expr
-     | expr '+' expr
-     | expr '-' expr
+def : (varDef ';') | funcDef | classDef;
+
+varDef : typename assignment (',' assignment)* ;
+assignment : ID ('=' expr)? ;
+
+
+statement : expr ';'
+          | varDef ';'
+          | if
+          | BREAK ';'
+          | CONTINUE ';'
+          | while
+          | for
+          | ';'
+          | '{' statement* '}'
+          | return;
+
+arg_list : '(' (expr (',' expr)*)? ')' | '()';
+
+expr : expr '.' ID arg_list?
+     | ID
+     | ID arg_list
+     | expr ('[' expr ']')+
+     | NEW typename
      | '(' expr ')'
-     | INT | ID;
+     | value
+     | expr ('++' | '--')
+     | <assoc=right> ('++' | '--') expr
+     | <assoc=right> ('+' | '-') expr
+     | <assoc=right> ('!' | '~') expr
+     | <assoc=right> expr '=' expr
+     | expr ('*' | '/' | '%') expr
+     | expr ('+' | '-') expr
+     | expr ('<<' | '>>') expr
+     | expr ('<' | '>' | '<=' | '>=') expr
+     | expr ('==' | '!=') expr
+     | expr '&' expr
+     | expr '^' expr
+     | expr '|' expr
+     | expr '&&' expr
+     | expr '||' expr
+     | '[' '&'? ']' func_list? '->' '{' statement* '}' arg_list?;
 
-assignment : announce '=' expr
-           | ID '=' expr;
-announce : typename ID;
+
+value : INT | STRING | TRUE | FALSE | ID | THIS | NULL;
+typename : (TINT | TSTRING | TBOOL | ID) ('[' value? ']')*;
 
 //function
-return_val : RETURN value ';';
-return_void : RETURN ';';
-func_main : TINT 'main()' '{' (sentence | return_val)* '}';
-func_list : '(' announce (',' announce)* ')' | '()';
-func_ret : typename ID  func_list  '{' (sentence | return_val)* '}' ;
-func_void : VOID ID  func_list   '{' (sentence | return_void)* '}' ;
+return : RETURN expr? ';';
+func_list : '(' (typename ID (',' typename ID)*)? ')' | '()';
+func_ret : typename ID  func_list  '{' statement* '}' ;
+func_void : VOID ID func_list   '{' statement* '}' ;
+funcDef : func_void | func_ret;
+
 //if
+if : IF '(' ((ID '=')? expr) ')' statement else?;
+else :ELSE statement;
 
-if : IF '(' ((ID '=')? expr) ')' block else?;
-else :ELSE block;
 //loop
-while : WHILE '(' ((ID '=')? expr)  ')' block;
-for : FOR '(' assignment? ';' ((ID '=')? expr)? ';'  ((ID '=')? expr)? ')' block;
+while : WHILE '(' expr  ')' statement;
+for : FOR '(' (varDef | expr)? ';' expr? ';'  expr? ')' statement;
 
-
-value : INT | STRING | TRUE | FALSE | ID;
-typename : TINT | TSTRING | TBOOL | ID;
+//class
+classDef : CLASS ID '{' (varDef ';' | funcDef | (ID '()' '{' statement* '}') )* '};';
 
 //----
+NEW : 'new';
+THIS : 'this';
+CLASS : 'class';
 WHILE : 'while';
 FOR : 'for';
 IF : 'if';
@@ -56,6 +86,7 @@ CONTINUE : 'continue';
 TINT : 'int';
 TBOOL : 'bool';
 TSTRING : 'string';
+NULL : 'null';
 
 
 ID : START_LETTER LETTER*;
@@ -67,5 +98,6 @@ INT : [1-9] [0-9]* | '0';
 STRING : '"' (ESC|.)*? '"';
 fragment ESC : '\\"' | '\\\\';
 
-LINE_INGORE : '//' .* [\n\r] -> skip;
+LINE_IGNORE : '//' .*? [\n\r] -> skip;
+BLOCK_IGNORE : '/*' .*? '*/' -> skip;
 WS : [ \n\t\r]+ -> skip;
