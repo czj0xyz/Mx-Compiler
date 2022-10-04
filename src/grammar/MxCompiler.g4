@@ -3,13 +3,10 @@ grammar MxCompiler;
     package antlr;
 }
 
-program : def* EOF;
-
-def : (varDef ';') | funcDef | classDef;
+program : ((varDef ';') | funcDef | classDef)* EOF;
 
 varDef : typename assignment (',' assignment)* ;
 assignment : ID ('=' expr)? ;
-
 
 statement : expr ';'
           | varDef ';'
@@ -60,7 +57,7 @@ func_void : VOID ID func_list   '{' statement* '}' ;
 funcDef : func_void | func_ret;
 
 //if
-if : IF '(' ((ID '=')? expr) ')' statement else?;
+if : IF '(' expr ')' statement else?;
 else :ELSE statement;
 
 //loop
