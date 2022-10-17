@@ -1,7 +1,4 @@
 grammar MxCompiler;
-@header {
-    package antlr;
-}
 
 program : ((varDef ';') | funcDef | classDef)* EOF;
 
@@ -65,7 +62,7 @@ while : WHILE '(' expr  ')' statement;
 for : FOR '(' (varDef | expr)? ';' expr? ';'  expr? ')' statement;
 
 //class
-classDef : CLASS ID '{' (varDef ';' | funcDef | (ID '()' '{' statement* '}') )* '};';
+classDef : CLASS ID '{' (varDef ';' | funcDef | (ID '()' '{' statement* '}') )* '}' ';';
 
 //----
 NEW : 'new';
@@ -85,6 +82,8 @@ TBOOL : 'bool';
 TSTRING : 'string';
 NULL : 'null';
 
+TRUE : 'true';
+FALSE : 'false';
 
 ID : START_LETTER LETTER*;
 fragment LETTER : [0-9a-zA-Z] | '_';
@@ -98,3 +97,46 @@ fragment ESC : '\\"' | '\\\\';
 LINE_IGNORE : '//' .*? [\n\r] -> skip;
 BLOCK_IGNORE : '/*' .*? '*/' -> skip;
 WS : [ \n\t\r]+ -> skip;
+
+LeftParen : '(';
+RightParen : ')';
+LeftBracket : '[';
+RightBracket : ']';
+LeftBrace : '{';
+RightBrace : '}';
+CloseParen : '()';
+
+Less : '<';
+LessEqual : '<=';
+Greater : '>';
+GreaterEqual : '>=';
+LeftShift : '<<';
+RightShift : '>>';
+
+Plus : '+';
+Minus : '-';
+Mul : '*';
+Div : '/';
+Mod : '%';
+PlusPlus : '++';
+MinusMinus : '--';
+
+And : '&';
+Or : '|';
+AndAnd : '&&';
+OrOr : '||';
+Caret : '^';
+Not : '!';
+Tilde : '~';
+
+Question : '?';
+Colon : ':';
+Semi : ';';
+Comma : ',';
+
+Assign : '=';
+Equal : '==';
+NotEqual : '!=';
+
+Arrow : '->';
+Dot : '.';

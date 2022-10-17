@@ -1,7 +1,5 @@
-// Generated from E:/上个大学怎么这么多事/编译器/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
-
-    package antlr;
-
+// Generated from E:/上个大学怎么这么多事/编译器/MxCompiler/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
+package grammar;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -18,12 +16,6 @@ public interface MxCompilerVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitProgram(MxCompilerParser.ProgramContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MxCompilerParser#def}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDef(MxCompilerParser.DefContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxCompilerParser#varDef}.
 	 * @param ctx the parse tree

@@ -1,7 +1,5 @@
-// Generated from E:/上个大学怎么这么多事/编译器/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
-
-    package antlr;
-
+// Generated from E:/上个大学怎么这么多事/编译器/MxCompiler/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
+package grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -25,18 +23,6 @@ public class MxCompilerBaseListener implements MxCompilerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProgram(MxCompilerParser.ProgramContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDef(MxCompilerParser.DefContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDef(MxCompilerParser.DefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
