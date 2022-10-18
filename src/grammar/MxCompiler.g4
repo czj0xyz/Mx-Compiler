@@ -1,6 +1,7 @@
 grammar MxCompiler;
 
-program : ((varDef ';') | funcDef | classDef)* EOF;
+program : def EOF;
+def : ((varDef ';') | funcDef | classDef)*;
 
 varDef : typename assignment (',' assignment)* ;
 assignment : ID ('=' expr)? ;
@@ -18,30 +19,30 @@ statement : expr ';'
 
 arg_list : '(' (expr (',' expr)*)? ')' | '()';
 
-expr : expr '.' ID arg_list?
-     | ID
-     | ID arg_list
-     | expr ('[' expr ']')+
-     | NEW typename
-     | '(' expr ')'
-     | value
-     | expr ('++' | '--')
-     | <assoc=right> ('++' | '--') expr
-     | <assoc=right> ('+' | '-') expr
-     | <assoc=right> ('!' | '~') expr
-     | <assoc=right> expr '=' expr
-     | expr ('*' | '/' | '%') expr
-     | expr ('+' | '-') expr
-     | expr ('<<' | '>>') expr
-     | expr ('<' | '>' | '<=' | '>=') expr
-     | expr ('==' | '!=') expr
-     | expr '&' expr
-     | expr '^' expr
-     | expr '|' expr
-     | expr '&&' expr
-     | expr '||' expr
-     | '[' '&'? ']' func_list? '->' '{' statement* '}' arg_list?;
-
+expr : expr '.' ID arg_list?                                        #MemberExpr
+     | ID                                                           #AtomExpr
+     | value                                                        #AtomExpr
+     | ID arg_list                                                  #FuncExpr
+     | expr ('[' expr ']')+                                         #ArrayExpr
+     | NEW typename                                                 #AtomExpr
+     | '(' expr ')'                                                 #AtomExpr
+     | expr ('++' | '--')                                           #SelfExpr
+     | <assoc=right> ('++' | '--') expr                             #SelfExpr
+     | <assoc=right> ('+' | '-') expr                               #SelfExpr
+     | <assoc=right> ('!' | '~') expr                               #SelfExpr
+     | <assoc=right> expr '=' expr                                  #AssignExpr
+     | expr ('*' | '/' | '%') expr                                  #BinaryExpr
+     | expr ('+' | '-') expr                                        #BinaryExpr
+     | expr ('<<' | '>>') expr                                      #BinaryExpr
+     | expr ('<' | '>' | '<=' | '>=') expr                          #BinaryExpr
+     | expr ('==' | '!=') expr                                      #BinaryExpr
+     | expr '&' expr                                                #BinaryExpr
+     | expr '^' expr                                                #BinaryExpr
+     | expr '|' expr                                                #BinaryExpr
+     | expr '&&' expr                                               #BinaryExpr
+     | expr '||' expr                                               #BinaryExpr
+     | '[' '&'? ']' func_list? '->' '{' statement* '}' arg_list?    #LambdaExpr
+     ;
 
 value : INT | STRING | TRUE | FALSE | ID | THIS | NULL;
 typename : (TINT | TSTRING | TBOOL | ID) ('[' value? ']')*;
