@@ -1,13 +1,13 @@
 package ast.Stmt;
 
 import Util.Position;
-import Util.Type;
+import Util.Type.*;
 import ast.ASTVisitor;
 
 import java.util.ArrayList;
 
 public class varDefNode extends defNode{
-    Type typename;
+    BaseType typename;
     ArrayList<AssignNode> assi = new ArrayList<>();
 
     public varDefNode(){}

@@ -3,11 +3,15 @@ package Util;
 
 public class Position {
     public int x,y;
-    Position() {
+    public Position() {
         x=y=0;
     }
-    Position(int a,int b) {
+    public Position(int a,int b) {
         x=a;y=b;
+    }
+
+    public String toString() {
+        return x+ " " +y;
     }
 
 }

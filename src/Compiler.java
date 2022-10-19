@@ -6,6 +6,7 @@ import grammar.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import Util.error.*;
 
 public class Compiler
 {
@@ -15,13 +16,13 @@ public class Compiler
         InputStream input = new FileInputStream(name);
         try {
 
-            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
-            lexer.removeErrorListeners();
+//            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
+//            lexer.removeErrorListeners();
 //            lexer.addErrorListener(new YxErrorListener());
-            MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
-            parser.removeErrorListeners();
+//            MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
+//            parser.removeErrorListeners();
 //            parser.addErrorListener(new YxErrorListener());
-            ParseTree parseTreeRoot = parser.program();
+//            ParseTree parseTreeRoot = parser.program();
 //            ASTBuilder astBuilder = new ASTBuilder(gScope);
 //            ASTRoot = (RootNode)astBuilder.visit(parseTreeRoot);
 //            new SymbolCollector(gScope).visit(ASTRoot);
