@@ -1,5 +1,5 @@
 package ast;
 
 public class ASTVisitor {
-    public void visit(ASTNode now) {}
+    public void visit(ASTNode it) {}
 }

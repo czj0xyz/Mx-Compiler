@@ -5,8 +5,8 @@ import ast.ASTVisitor;
 import ast.expr.*;
 
 public class whileNode extends StmtNode{
-    exprNode check;
-    StmtNode loop;
+    public exprNode check;
+    public StmtNode loop;
 
     public whileNode(){}
 

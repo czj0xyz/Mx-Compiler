@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import Util.*;
 
 public class ProgramNode extends StmtNode {
-    ArrayList<defNode> defs = new ArrayList<>();
-    ProgramNode(){}
+    public defNode def;
 
-    ProgramNode(Position position){
+    public ProgramNode(Position position){
         super(position);
     }
 

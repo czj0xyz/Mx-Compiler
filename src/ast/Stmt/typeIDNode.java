@@ -2,13 +2,14 @@ package ast.Stmt;
 
 import Util.Position;
 import ast.ASTVisitor;
-import ast.expr.*;
-public class returnNode extends StmtNode{
-    public exprNode value;
+import Util.Type.*;
 
-    public returnNode(exprNode v, Position position) {
+public class typeIDNode extends StmtNode{
+    public BaseType t;
+
+    public typeIDNode(int id,Position position) {
         super(position);
-        this.value = v;
+        this.t = new BaseType(position,id);
     }
 
     @Override

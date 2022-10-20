@@ -6,6 +6,8 @@ def : ((varDef ';') | funcDef | classDef)*;
 varDef : typename assignment (',' assignment)* ;
 assignment : ID ('=' expr)? ;
 
+block : '{' statement* '}';
+
 statement : expr ';'
           | varDef ';'
           | if
@@ -14,7 +16,7 @@ statement : expr ';'
           | while
           | for
           | ';'
-          | '{' statement* '}'
+          | block
           | return;
 
 arg_list : '(' (expr (',' expr)*)? ')' | '()';
@@ -25,33 +27,35 @@ expr : expr '.' ID arg_list?                                        #MemberExpr
      | ID arg_list                                                  #FuncExpr
      | expr ('[' expr ']')+                                         #ArrayExpr
      | NEW typename                                                 #AtomExpr
+     | NEW typeID ('[' expr ']')+ ('[' ']')*                        #AtomExpr
      | '(' expr ')'                                                 #AtomExpr
      | expr ('++' | '--')                                           #SelfExpr
      | <assoc=right> ('++' | '--') expr                             #SelfExpr
      | <assoc=right> ('+' | '-') expr                               #SelfExpr
      | <assoc=right> ('!' | '~') expr                               #SelfExpr
      | <assoc=right> expr '=' expr                                  #AssignExpr
-     | expr ('*' | '/' | '%') expr                                  #BinaryExpr
-     | expr ('+' | '-') expr                                        #BinaryExpr
-     | expr ('<<' | '>>') expr                                      #BinaryExpr
-     | expr ('<' | '>' | '<=' | '>=') expr                          #BinaryExpr
-     | expr ('==' | '!=') expr                                      #BinaryExpr
-     | expr '&' expr                                                #BinaryExpr
-     | expr '^' expr                                                #BinaryExpr
-     | expr '|' expr                                                #BinaryExpr
-     | expr '&&' expr                                               #BinaryExpr
-     | expr '||' expr                                               #BinaryExpr
-     | '[' '&'? ']' func_list? '->' '{' statement* '}' arg_list?    #LambdaExpr
+     | expr op=('*' | '/' | '%') expr                               #BinaryExpr_int
+     | expr op=('+' | '-') expr                                     #BinaryExpr_int_string
+     | expr op=('<<' | '>>') expr                                   #BinaryExpr_int
+     | expr op=('<' | '>' | '<=' | '>=') expr                       #BinaryExpr_all
+     | expr op=('==' | '!=') expr                                   #BinaryExpr_all
+     | expr op='&' expr                                             #BinaryExpr_int_bool
+     | expr op='^' expr                                             #BinaryExpr_int_bool
+     | expr op='|' expr                                             #BinaryExpr_int_bool
+     | expr op='&&' expr                                            #BinaryExpr_bool
+     | expr op='||' expr                                            #BinaryExpr_bool
+     | '[' '&'? ']' func_list? '->' block arg_list?                 #LambdaExpr
      ;
 
 value : INT | STRING | TRUE | FALSE | ID | THIS | NULL;
-typename : (TINT | TSTRING | TBOOL | ID) ('[' value? ']')*;
+typeID : TINT | TSTRING | TBOOL | ID;
+typename : typeID ('[' ']')*;
 
 //function
 return : RETURN expr? ';';
 func_list : '(' (typename ID (',' typename ID)*)? ')' | '()';
-func_ret : typename ID  func_list  '{' statement* '}' ;
-func_void : VOID ID func_list   '{' statement* '}' ;
+func_ret : typename ID  func_list  block ;
+func_void : VOID ID func_list   block ;
 funcDef : func_void | func_ret;
 
 //if
@@ -60,10 +64,10 @@ else :ELSE statement;
 
 //loop
 while : WHILE '(' expr  ')' statement;
-for : FOR '(' (varDef | expr)? ';' expr? ';'  expr? ')' statement;
+for : FOR '(' (initvar = varDef | initexpr = expr)? ';' (conditionexpr = expr)? ';'  (stpexpr = expr)? ')' statement;
 
 //class
-classDef : CLASS ID '{' (varDef ';' | funcDef | (ID '()' '{' statement* '}') )* '}' ';';
+classDef : CLASS ID '{' (varDef ';' | funcDef | (ID '()' block) )* '}' ';';
 
 //----
 NEW : 'new';
