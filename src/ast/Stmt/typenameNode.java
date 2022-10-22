@@ -10,7 +10,7 @@ public class typenameNode extends StmtNode{
 
     public typenameNode(BaseType tx, int s, Position position) {
         super(position);
-        if(s>0)this.t = new ArrayType(position,tx,s);
+        if(s>0)this.t = new ArrayType(tx,s);
         else this.t = tx;
         this.sz = s;
     }

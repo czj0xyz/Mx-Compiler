@@ -1,14 +1,14 @@
 package ast.Stmt;
 
 import Util.Position;
-import ast.ASTVisitor;
 import ast.expr.*;
+import ast.ASTVisitor;
 
 public class forNode extends StmtNode{
-    exprNode init,check,stp;
+    public exprNode init,check,stp;
 
-    varDefNode init2;
-    StmtNode loop;
+    public varDefNode init2;
+    public StmtNode loop;
 
     public forNode() {}
 

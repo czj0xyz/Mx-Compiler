@@ -1,9 +1,9 @@
 package ast.Stmt;
 
 import Util.Position;
-import ast.ASTVisitor;
 
 import java.util.ArrayList;
+import ast.ASTVisitor;
 
 public class blockNode extends StmtNode{
     public ArrayList<StmtNode> list = new ArrayList<>();

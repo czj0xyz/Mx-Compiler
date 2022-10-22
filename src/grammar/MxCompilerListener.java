@@ -272,26 +272,6 @@ public interface MxCompilerListener extends ParseTreeListener {
 	 */
 	void exitFunc_list(MxCompilerParser.Func_listContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxCompilerParser#func_ret}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunc_ret(MxCompilerParser.Func_retContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MxCompilerParser#func_ret}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunc_ret(MxCompilerParser.Func_retContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MxCompilerParser#func_void}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunc_void(MxCompilerParser.Func_voidContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MxCompilerParser#func_void}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunc_void(MxCompilerParser.Func_voidContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MxCompilerParser#funcDef}.
 	 * @param ctx the parse tree
 	 */

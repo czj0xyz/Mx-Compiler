@@ -12,7 +12,7 @@ public class selfExpr extends exprNode{
         this.son = _son;
     }
 
-    @Override boolean Assignable() {
+    @Override public boolean Assignable() {
         return true;
     }
     @Override

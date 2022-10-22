@@ -2,9 +2,9 @@ package ast.expr;
 
 import Util.Position;
 import Util.Type.BaseType;
-import ast.ASTVisitor;
 
 import java.util.ArrayList;
+import ast.ASTVisitor;
 
 public class arrayExpr extends exprNode{
     public exprNode rt;

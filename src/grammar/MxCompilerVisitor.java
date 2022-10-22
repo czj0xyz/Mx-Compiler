@@ -167,18 +167,6 @@ public interface MxCompilerVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunc_list(MxCompilerParser.Func_listContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MxCompilerParser#func_ret}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunc_ret(MxCompilerParser.Func_retContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MxCompilerParser#func_void}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunc_void(MxCompilerParser.Func_voidContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link MxCompilerParser#funcDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

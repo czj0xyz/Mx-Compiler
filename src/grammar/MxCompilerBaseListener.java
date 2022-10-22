@@ -304,30 +304,6 @@ public class MxCompilerBaseListener implements MxCompilerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunc_ret(MxCompilerParser.Func_retContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunc_ret(MxCompilerParser.Func_retContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunc_void(MxCompilerParser.Func_voidContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunc_void(MxCompilerParser.Func_voidContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFuncDef(MxCompilerParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -13,8 +13,16 @@ public class constNode extends exprNode{
         this.isThis = this.isNull = false;
     }
 
-    @Override boolean isConst() {
+    @Override public boolean isConst() {
         return true;
+    }
+    @Override
+    public boolean isThis() {
+        return isThis;
+    }
+    @Override
+    public boolean isNull() {
+        return isNull;
     }
 
     @Override

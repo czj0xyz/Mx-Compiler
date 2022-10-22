@@ -1,59 +1,65 @@
 package Util.Scope;
 import java.util.HashMap;
+
+import Util.Position;
 import Util.Type.*;
 import Util.error.SemanticError;
 
 public class Scope {
     //className x typeName and funcName
-    private HashMap<String, BaseType> ClassMap = new HashMap<>();
     private HashMap<String, BaseType> varMap = new HashMap<>();
-    private HashMap<String, FuncType> funcMap = new HashMap<>();
     private Scope par;
-    boolean in_class,in_func;
+    public boolean in_class,in_func;
+    public int loop_cnt;
+
+    public BaseType func_ret;
+
+    public Scope(){
+        in_class = in_func = false;
+        loop_cnt = 0;
+        par = null;
+        func_ret = new BaseType();
+    }
 
     public Scope(Scope fa,boolean in_class_,boolean in_func_) {
         this.par = fa;
         this.in_class = in_class_;
         this.in_func = in_func_;
+        if(fa != null){
+            this.loop_cnt = fa.loop_cnt;
+            this.func_ret = fa.func_ret;
+        }
+        else {
+            this.loop_cnt = 0;
+            this.func_ret = new BaseType();
+        }
     }
-
     public Scope parScope() {
         return this.par;
     }
 
-    public void put_def(BaseType type, String name) {
-        if(type.getTypeId() == 3) {
-            if(ClassMap.containsKey(name))
-                throw new SemanticError("Semantic Error: name redefine", type.position);
-            ClassMap.put(name,type);
-            return;
-        }
-        if(varMap.containsKey(name) || funcMap.containsKey(name))
-            throw new SemanticError("Semantic Error: name redefine", type.position);
+    public void put_def(BaseType type, String name, Position position) {
+        if( varMap.containsKey(name) )
+            throw new SemanticError("Semantic Error: name redefine", position);
         varMap.put(name,type);
     }
 
-    public void put_func(FuncType func,String name) {
-        if(varMap.containsKey(name) || funcMap.containsKey(name))
-            throw new SemanticError("Semantic Error: name redefine", func.position);
-        funcMap.put(name,func);
-    }
-
     public boolean containsVar(String name) {
-        return varMap.containsKey(name);
+        if(varMap.containsKey(name)) return true;
+        if(par != null)return par.containsVar(name);
+        return false;
     }
 
-    public boolean containsClass(String name) {
-        return ClassMap.containsKey(name);
+    public String getTypeName(String name) {
+        if(varMap.containsKey(name)) return varMap.get(name).getType();
+        if(par != null)return par.getTypeName(name);
+        return "";
     }
 
     public BaseType getType(String name) {
         if(varMap.containsKey(name)) return varMap.get(name);
-        return null;
+        if(par != null)return par.getType(name);
+        return new BaseType();
     }
 
-    public FuncType getFunc(String name) {
-        if(funcMap.containsKey(name)) return funcMap.get(name);
-        return null;
-    }
 }

@@ -1,20 +1,19 @@
 package ast.Stmt;
 
 import Util.Position;
-import ast.ASTVisitor;
-import ast.ASTNode;
 
 import java.util.ArrayList;
+import ast.ASTVisitor;
 public class classDefNode extends StmtNode{
     public String name;
 
     public ArrayList<funcDefNode> func = new ArrayList<>();
     public ArrayList<varDefNode> var = new ArrayList<>();
 
-    public ASTNode self;
-    boolean fl;
+    public funcDefNode self;
+    public boolean fl;
 
-    public classDefNode(String name_,ASTNode func,Position position,boolean f) {
+    public classDefNode(String name_,funcDefNode func,Position position,boolean f) {
         super(position);
 
         this.name = name_;

@@ -11,7 +11,7 @@ public class varNode extends exprNode{
         this.name = name_;
     }
 
-    @Override boolean Assignable() {
+    @Override public boolean Assignable() {
         return true;
     }
 

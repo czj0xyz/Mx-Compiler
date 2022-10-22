@@ -1,11 +1,11 @@
 package ast.Stmt;
 
 import Util.Position;
-import ast.ASTVisitor;
 import ast.expr.*;
+import ast.ASTVisitor;
 public class AssignNode extends StmtNode{
-    String name;
-    exprNode expr;
+    public String name;
+    public exprNode expr;
     public AssignNode(){}
     public AssignNode(String s, exprNode p, Position position){
         super(position);

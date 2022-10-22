@@ -3,6 +3,7 @@ package ast.expr;
 import Util.Position;
 import Util.Type.BaseType;
 import ast.*;
+import ast.ASTVisitor;
 
 public abstract class exprNode extends ASTNode {
     public BaseType type;
@@ -12,11 +13,17 @@ public abstract class exprNode extends ASTNode {
     }
     exprNode() {}
 
-    boolean isConst() {
+    public boolean isConst() {
         return false;
     }
 
-    boolean Assignable() {
+    public boolean Assignable() {
+        return false;
+    }
+    public boolean isNull() {
+        return false;
+    }
+    public boolean isThis() {
         return false;
     }
 

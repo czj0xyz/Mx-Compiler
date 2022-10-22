@@ -2,7 +2,7 @@ package ast;
 
 import Util.*;
 public abstract class ASTNode {
-    Position position;
+    public Position position;
 
     public ASTNode(){}
 

@@ -72,8 +72,8 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         if(ctx.for_()!=null)return visit(ctx.for_());
         if(ctx.block()!=null)return visit(ctx.block());
         if(ctx.return_()!=null)return visit(ctx.return_());
-        if(ctx.BREAK()!=null)return visit(ctx.BREAK());
-        if(ctx.CONTINUE()!=null)return visit(ctx.CONTINUE());
+        if(ctx.BREAK()!=null)return new breakNode(new Position(ctx));
+        if(ctx.CONTINUE()!=null)return new continueNode(new Position(ctx));
         return null;
     }
 
@@ -161,7 +161,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             if(ctx.value().INT()!=null) typeId = 0;
             else if(ctx.value().TRUE()!=null||ctx.value().FALSE()!=null) typeId = 1;
             else if(ctx.value().STRING()!=null) typeId = 2;
-            var type = new BaseType(new Position(ctx),typeId);
+            var type = new BaseType(typeId);
             var ret = new constNode(type,new Position(ctx));
 
             if(ctx.value().THIS()!=null)ret.isThis=true;
@@ -174,7 +174,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             return new constNode(tmp.t,new Position(ctx));
         }else {
             var tmp = (typeIDNode) visit(ctx.typeID());
-            BaseType ty = new ArrayType(new Position(ctx),tmp.t,ctx.LeftBracket().size());
+            BaseType ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
             return new constNode(ty,new Position(ctx));
         }
     }
@@ -230,28 +230,10 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     }
 
     @Override
-    public ASTNode visitFunc_ret(MxCompilerParser.Func_retContext ctx) {
-        var ret =new func_retNode(((typenameNode)visit(ctx.typename())).t,
-            ctx.ID().toString(),
-            (func_listNode) visit(ctx.func_list()),
-            (blockNode) visit(ctx.block()),
-            new Position(ctx));
-        return ret;
-    }
-
-    @Override
-    public ASTNode visitFunc_void(MxCompilerParser.Func_voidContext ctx) {
-        var ret =new func_voidNode(ctx.ID().toString(),
-                (func_listNode) visit(ctx.func_list()),
-                (blockNode) visit(ctx.block()),
-                new Position(ctx));
-        return ret;
-    }
-
-    @Override
     public ASTNode visitFuncDef(MxCompilerParser.FuncDefContext ctx){
-        if(ctx.func_ret()!=null) return (func_retNode) visit(ctx.func_ret());
-        else return (func_voidNode) visit(ctx.func_void());
+        var t = (typenameNode) visit(ctx.typename());
+        return new funcDefNode(t.t,(func_listNode) visit(ctx.func_list()),
+                (blockNode) visit(ctx.block()),ctx.ID().toString(),new Position(ctx));
     }
 
     @Override
@@ -293,10 +275,10 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         Position p = new Position(ctx);
         String name = ctx.ID().get(0).toString();
         boolean fl = ctx.ID().size() <= 2;
-        ASTNode func = null;
+        funcDefNode func = null;
         if(ctx.ID().size()>1) {
             var b = (blockNode) visit(ctx.block().get(0));
-            func = new func_retNode(new ClassType(p,name) , name, new func_listNode(p), b , p);
+            func = new funcDefNode(new ClassType(p,name) ,new func_listNode(p), b, name , p);
         }
         var ret =new classDefNode(name,func,p,fl);
         for(int i=0;i<ctx.varDef().size();i++)

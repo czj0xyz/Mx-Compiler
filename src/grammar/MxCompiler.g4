@@ -48,15 +48,13 @@ expr : expr '.' ID arg_list?                                        #MemberExpr
      ;
 
 value : INT | STRING | TRUE | FALSE | ID | THIS | NULL;
-typeID : TINT | TSTRING | TBOOL | ID;
+typeID : TINT | TSTRING | TBOOL | ID | VOID;
 typename : typeID ('[' ']')*;
 
 //function
 return : RETURN expr? ';';
 func_list : '(' (typename ID (',' typename ID)*)? ')' | '()';
-func_ret : typename ID  func_list  block ;
-func_void : VOID ID func_list   block ;
-funcDef : func_void | func_ret;
+funcDef : typename ID  func_list  block ;
 
 //if
 if : IF '(' expr ')' statement else?;

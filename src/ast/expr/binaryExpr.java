@@ -5,7 +5,7 @@ import Util.Type.BaseType;
 import ast.ASTVisitor;
 
 public class binaryExpr extends exprNode{
-    enum operator{
+    public enum operator{
         _int,
         _int_string,
         _all,
