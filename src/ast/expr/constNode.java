@@ -4,13 +4,20 @@ import Util.Position;
 import Util.Type.BaseType;
 import ast.ASTVisitor;
 
+import java.util.ArrayList;
+
 public class constNode extends exprNode{
     public boolean isThis,isNull;
-
+    public ArrayList<exprNode> expr = new ArrayList<>();
 
     public constNode(BaseType type, Position pos) {
         super(type,pos);
         this.isThis = this.isNull = false;
+    }
+
+    @Override public boolean Assignable() {
+        if(isThis)return true;
+        return false;
     }
 
     @Override public boolean isConst() {

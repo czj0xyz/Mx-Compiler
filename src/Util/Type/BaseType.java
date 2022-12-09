@@ -1,6 +1,8 @@
 package Util.Type;
 
+import Frontend.SemanticChecker;
 import Util.Position;
+import Util.error.SemanticError;
 
 public class BaseType {
     boolean isInt,isBool,isString,isClass,isVoid;
@@ -19,7 +21,8 @@ public class BaseType {
         else if(isBool)return "bool";
         else if(isString)return "string";
         else if(isVoid) return "void";
-        return "???";
+        else throw new SemanticError("I got smoke",new Position());
+//        return "???";
     }
 
     public int getTypeId() {

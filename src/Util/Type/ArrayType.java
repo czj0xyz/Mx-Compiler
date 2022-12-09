@@ -7,6 +7,7 @@ public class ArrayType extends BaseType{
     public BaseType type;
     public ArrayType(BaseType t,int s) {
         super(t.getTypeId());
+        type = t;
         this.sz=s;
     }
 

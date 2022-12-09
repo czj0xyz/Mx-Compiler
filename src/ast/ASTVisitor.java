@@ -4,7 +4,8 @@ import ast.Stmt.*;
 import ast.expr.*;
 
 public interface ASTVisitor {
-    void visit(ASTNode it);
+//    void visit(ASTNode it);
+//    void visit(StmtNode it);
     void visit(ProgramNode it);
     void visit(AssignNode it);
     void visit(blockNode it);
@@ -21,7 +22,9 @@ public interface ASTVisitor {
     void visit(returnNode it);
     void visit(varDefNode it);
     void visit(whileNode it);
-
+    void visit(ExprStmtNode it);
+    void visit(typeIDNode it);
+    void visit(typenameNode it);
     void visit(arg_list it);
     void visit(arrayExpr it);
     void visit(assignExpr it);

@@ -9,8 +9,6 @@ public abstract class ASTNode {
     public ASTNode(Position position_) {
         position = position_;
     }
-    public void accept(ASTVisitor visitor) {
-        visitor.visit(this);
-    }
+    abstract public void accept(ASTVisitor visitor);
 
 }

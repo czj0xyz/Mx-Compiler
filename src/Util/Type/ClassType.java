@@ -19,7 +19,7 @@ public class ClassType extends BaseType{
     }
 
     public BaseType getMem(String Name,Position position) {
-        if(varMap.containsKey(Name))
+        if(!varMap.containsKey(Name))
             throw new SemanticError("class" + name + " has no member named " + Name,position);
         return varMap.get(Name);
     }
@@ -30,10 +30,11 @@ public class ClassType extends BaseType{
         funcMap.put(Name,func);
     }
 
-    public void check_func(ArrayList<BaseType> list,String Name,Position position) {
-        if(funcMap.containsKey(Name))
+    public BaseType check_func(ArrayList<BaseType> list,String Name,Position position) {
+        if(!funcMap.containsKey(Name))
             throw new SemanticError("class" + name + " has no function named " + Name,position);
         funcMap.get(Name).check(list);
+        return funcMap.get(Name).ret;
     }
 
     public ClassType(Position pos,String Name) {
@@ -44,6 +45,11 @@ public class ClassType extends BaseType{
 
     @Override
     public String getType() {
+        return name;
+    }
+
+    @Override
+    public String getBaseType() {
         return name;
     }
 }

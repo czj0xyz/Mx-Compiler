@@ -10,15 +10,23 @@ public class Scope {
     private HashMap<String, BaseType> varMap = new HashMap<>();
     private Scope par;
     public boolean in_class,in_func;
+    public ClassType in_class_def;
     public int loop_cnt;
 
     public BaseType func_ret;
 
     public Scope(){
-        in_class = in_func = false;
-        loop_cnt = 0;
-        par = null;
-        func_ret = new BaseType();
+        this.in_class = this.in_func = false;
+        this.loop_cnt = 0;
+        this.par = null;
+        this.func_ret = new BaseType();
+        this.in_class_def = null;
+    }
+
+    public int Sz() {
+        int ret=varMap.size();
+        if(par!=null) ret+=par.Sz();
+        return ret;
     }
 
     public Scope(Scope fa,boolean in_class_,boolean in_func_) {
@@ -28,10 +36,11 @@ public class Scope {
         if(fa != null){
             this.loop_cnt = fa.loop_cnt;
             this.func_ret = fa.func_ret;
-        }
-        else {
+            this.in_class_def = fa.in_class_def;
+        }else {
             this.loop_cnt = 0;
             this.func_ret = new BaseType();
+            this.in_class_def = null;
         }
     }
     public Scope parScope() {

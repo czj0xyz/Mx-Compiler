@@ -33,7 +33,8 @@ public class FuncType{
         if(this.arg_list.size() != arg_list2.size())
             throw new SemanticError("Type mismatched in function "  , position);
         for(int i=0;i<arg_list2.size();i++)
-            throw new SemanticError("Type mismatched in function "  , position);
+            if(!arg_list2.get(i).getType().equals(arg_list.get(i).getType()))
+                throw new SemanticError("Type mismatched in function "  , position);
 
     }
 

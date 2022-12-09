@@ -10,8 +10,8 @@ public abstract class StmtNode extends ASTNode{
     }
     public StmtNode(){}
 
-    @Override
-    public void accept(ASTVisitor visitor) {
-        visitor.visit(this);
-    }
+//    @Override
+//    public void accept(ASTVisitor visitor) {
+//        visitor.visit(this);
+//    }
 }

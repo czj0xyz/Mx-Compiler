@@ -4,7 +4,7 @@ import ast.Stmt.*;
 import java.util.ArrayList;
 import Util.*;
 
-public class ProgramNode extends StmtNode {
+public class ProgramNode extends ASTNode {
     public defNode def;
 
     public ProgramNode(Position position){

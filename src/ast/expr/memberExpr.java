@@ -16,6 +16,11 @@ public class memberExpr extends exprNode{
         this.list = l_;
     }
 
+    @Override public boolean Assignable() {
+        if(list==null)return true;
+        else return false;
+    }
+
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);

@@ -8,8 +8,8 @@ import grammar.MxCompilerParser;
 import grammar.MxCompilerBaseVisitor;
 
 import ast.ASTNode;
-import ast.ProgramNode;
 import ast.Stmt.*;
+
 
 public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
@@ -27,10 +27,11 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         for (int i = 0; i < ctx.children.size(); i++) {
             var son = ctx.children.get(i);
             if(son instanceof MxCompilerParser.VarDefContext)
-                ret.Def.add( (varDefNode)visit(son) );
+                ret.Def.add((varDefNode) visit(son));
             else if(son instanceof MxCompilerParser.ClassDefContext)
-                ret.Def.add( (classDefNode)visit(son) );
-            else ret.Def.add( visit(son) );
+                ret.Def.add((classDefNode) visit(son) );
+            else if(son instanceof MxCompilerParser.FuncDefContext)
+                ret.Def.add((funcDefNode) visit(son));
         }
         return ret;
     }
@@ -45,11 +46,14 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
         for(var son : ctx.assignment())
             ret.assi.add( (AssignNode)visit(son) );
+
         return ret;
     }
     @Override
     public ASTNode visitAssignment(MxCompilerParser.AssignmentContext ctx) {
-        var ret = new AssignNode(ctx.ID().toString(),(exprNode) visit(ctx.expr()),new Position(ctx));
+        exprNode dw = null;
+        if(ctx.expr()!=null) dw = (exprNode) visit(ctx.expr());
+        var ret = new AssignNode(ctx.ID().toString(),dw,new Position(ctx));
         return ret;
     }
     @Override
@@ -57,15 +61,22 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         var ret = new blockNode(new Position(ctx));
 
         for(var son : ctx.statement()) {
-            var x = (StmtNode) visit(son);
-            if(x!=null)ret.list.add(x);
+            StmtNode x = (StmtNode)visit(son);
+            if(x==null)continue;
+            ret.list.add(x);
         }
 
         return ret;
     }
+
+    @Override
+    public ASTNode visitExprstmt(MxCompilerParser.ExprstmtContext ctx) {
+        return new ExprStmtNode((exprNode) visit(ctx.expr()),new Position(ctx));
+    }
+
     @Override
     public ASTNode visitStatement(MxCompilerParser.StatementContext ctx) {
-        if(ctx.expr()!=null) return visit(ctx.expr());
+        if(ctx.exprstmt()!=null) return visit(ctx.exprstmt());
         if(ctx.varDef()!=null) return visit(ctx.varDef());
         if(ctx.if_()!=null)return visit(ctx.if_());
         if(ctx.while_()!=null)return visit(ctx.while_());
@@ -88,6 +99,8 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     public ASTNode visitSelfExpr(MxCompilerParser.SelfExprContext ctx) {
         var son = (exprNode)visit(ctx.expr());
         var ret = new selfExpr(son,son.type,new Position(ctx));
+        if(ctx.Plus()!=null || ctx.PlusPlus()!=null || ctx.Minus()!=null || ctx.MinusMinus()!=null ) ret.op = new BaseType(0);
+        if(ctx.Not()!=null || ctx.Tilde()!=null) ret.op = new BaseType(1);
         return ret;
     }
 
@@ -119,7 +132,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         if(ctx.arg_list()!=null)
             arg =  (arg_list) visit(ctx.arg_list());
 
-        return new lambdaNode(list,(blockNode) visit(ctx.block()),arg,new Position(ctx));
+        return new lambdaNode(list,(blockNode) visit(ctx.block()),arg,ctx.And()!=null,new Position(ctx));
     }
 
     @Override
@@ -168,14 +181,19 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             else if(ctx.value().NULL()!=null)ret.isNull=true;
 
             return ret;
-        }else if(ctx.NEW()==null) return (exprNode) visit(ctx.expr().get(0));
+        }else if(ctx.NEW()==null) return (exprNode)visit(ctx.expr().get(0));
         else if(ctx.typename()!=null) {
             var tmp = (typenameNode) visit(ctx.typename());
-            return new constNode(tmp.t,new Position(ctx));
+            BaseType ret;
+            if(tmp.sz>0) ret = new ArrayType(tmp.t,tmp.sz);
+            else ret = tmp.t;
+            return new constNode(ret,new Position(ctx));
         }else {
             var tmp = (typeIDNode) visit(ctx.typeID());
-            BaseType ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
-            return new constNode(ty,new Position(ctx));
+            ArrayType ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
+            constNode ret = new constNode(ty,new Position(ctx));
+            for(var v:ctx.expr()) ret.expr.add( (exprNode)visit(v) );
+            return ret;
         }
     }
     @Override
@@ -199,11 +217,14 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitTypeID(MxCompilerParser.TypeIDContext ctx) {
         int id=4;
+        String dw;
         if(ctx.TINT()!=null)id=0;
         else if(ctx.TBOOL()!=null)id=1;
         else if(ctx.TSTRING()!=null)id=2;
         else if(ctx.ID()!=null)id=3;
-        return new typeIDNode(id,new Position(ctx));
+        if(id==3)dw=ctx.ID().toString();
+        else dw="";
+        return new typeIDNode(id,dw,new Position(ctx));
     }
 
     @Override
@@ -213,7 +234,9 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitReturn(MxCompilerParser.ReturnContext ctx) {
-        return new returnNode((exprNode) visit(ctx.expr()) ,new Position(ctx));
+        exprNode ret = null;
+        if(ctx.expr()!=null) ret = (exprNode) visit(ctx.expr());
+        return new returnNode(ret ,new Position(ctx));
     }
 
     @Override
@@ -260,8 +283,10 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
     @Override
     public ASTNode visitFor(MxCompilerParser.ForContext ctx){
-        var condition = (exprNode) visit(ctx.conditionexpr);
-        var stp = (exprNode) visit(ctx.stpexpr);
+        exprNode condition = null;
+        if(ctx.conditionexpr!=null)condition=(exprNode) visit(ctx.conditionexpr);
+        exprNode stp =null;
+        if(ctx.stpexpr!=null)stp=(exprNode) visit(ctx.stpexpr);
         exprNode init1 = null;
         if(ctx.initexpr != null) init1 = (exprNode) visit(ctx.initexpr);
         varDefNode init2 = null;
@@ -274,11 +299,12 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     public ASTNode visitClassDef(MxCompilerParser.ClassDefContext ctx) {
         Position p = new Position(ctx);
         String name = ctx.ID().get(0).toString();
-        boolean fl = ctx.ID().size() <= 2;
+        boolean fl = ctx.ID().size() >= 3;
         funcDefNode func = null;
         if(ctx.ID().size()>1) {
             var b = (blockNode) visit(ctx.block().get(0));
-            func = new funcDefNode(new ClassType(p,name) ,new func_listNode(p), b, name , p);
+            if(!name.equals( ctx.ID().get(1).toString() ))fl = true;
+            func = new funcDefNode(/*new ClassType(p,name)*/new BaseType(4),new func_listNode(p), b, name , p);
         }
         var ret =new classDefNode(name,func,p,fl);
         for(int i=0;i<ctx.varDef().size();i++)

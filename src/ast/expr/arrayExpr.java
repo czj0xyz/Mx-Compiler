@@ -21,4 +21,8 @@ public class arrayExpr extends exprNode{
         visitor.visit(this);
     }
 
+    @Override
+    public boolean Assignable() {
+        return true;
+    }
 }

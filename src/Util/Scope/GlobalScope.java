@@ -15,6 +15,8 @@ public class GlobalScope extends Scope {
 
     public GlobalScope par;
 
+    public Scope Var;
+
     public GlobalScope(GlobalScope par_) {
         this.par = par_;
         if(par == null) {
@@ -26,6 +28,7 @@ public class GlobalScope extends Scope {
             funcMap.put("getInt", new FuncType(new Position(), "getInt", new BaseType(0)));
             funcMap.put("toString", new FuncType(new Position(), "toString", new BaseType(0), new BaseType(2)));
         }
+        Var = new Scope(null,false,false);
     }
 
     public boolean containsClass(String name) {
@@ -33,7 +36,11 @@ public class GlobalScope extends Scope {
         if(par != null) return par.containsClass(name);
         return false;
     }
-    public boolean containsfunc(String name){ return funcMap.containsKey(name);}
+    public boolean containsfunc(String name){
+        if(funcMap.containsKey(name)) return true;
+        if(par != null)return par.containsfunc(name);
+        return false;
+    }
 
     public void put_func(FuncType func,String name) {
         if( funcMap.containsKey(name) )
@@ -51,5 +58,11 @@ public class GlobalScope extends Scope {
         if(ClassMap.containsKey(name))
             throw new SemanticError("Semantic Error: name redefine", position);
         ClassMap.put(name,type);
+    }
+
+    public ClassType getClass(String name) {
+        if(ClassMap.containsKey(name))return ClassMap.get(name);
+        if(par != null)return par.getClass(name);
+        return null;
     }
 }

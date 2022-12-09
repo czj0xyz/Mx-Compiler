@@ -1,4 +1,4 @@
-// Generated from E:/上个大学怎么这么多事/编译器/MxCompiler/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package grammar;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class MxCompilerBaseListener implements MxCompilerListener {
 	/**
 	 * {@inheritDoc}
@@ -95,6 +96,18 @@ public class MxCompilerBaseListener implements MxCompilerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArg_list(MxCompilerParser.Arg_listContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprstmt(MxCompilerParser.ExprstmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprstmt(MxCompilerParser.ExprstmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

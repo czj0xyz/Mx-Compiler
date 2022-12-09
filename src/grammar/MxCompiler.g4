@@ -8,7 +8,7 @@ assignment : ID ('=' expr)? ;
 
 block : '{' statement* '}';
 
-statement : expr ';'
+statement : exprstmt ';'
           | varDef ';'
           | if
           | BREAK ';'
@@ -21,19 +21,20 @@ statement : expr ';'
 
 arg_list : '(' (expr (',' expr)*)? ')' | '()';
 
+exprstmt : expr;
+
 expr : expr '.' ID arg_list?                                        #MemberExpr
      | ID                                                           #AtomExpr
      | value                                                        #AtomExpr
+     | NEW typeID ('[' expr ']')+ ('[' ']')*                        #AtomExpr
+     | NEW typename ('()')?                                         #AtomExpr
+     | '(' expr ')'                                                 #AtomExpr
      | ID arg_list                                                  #FuncExpr
      | expr ('[' expr ']')+                                         #ArrayExpr
-     | NEW typename                                                 #AtomExpr
-     | NEW typeID ('[' expr ']')+ ('[' ']')*                        #AtomExpr
-     | '(' expr ')'                                                 #AtomExpr
      | expr ('++' | '--')                                           #SelfExpr
      | <assoc=right> ('++' | '--') expr                             #SelfExpr
      | <assoc=right> ('+' | '-') expr                               #SelfExpr
      | <assoc=right> ('!' | '~') expr                               #SelfExpr
-     | <assoc=right> expr '=' expr                                  #AssignExpr
      | expr op=('*' | '/' | '%') expr                               #BinaryExpr_int
      | expr op=('+' | '-') expr                                     #BinaryExpr_int_string
      | expr op=('<<' | '>>') expr                                   #BinaryExpr_int
@@ -44,7 +45,8 @@ expr : expr '.' ID arg_list?                                        #MemberExpr
      | expr op='|' expr                                             #BinaryExpr_int_bool
      | expr op='&&' expr                                            #BinaryExpr_bool
      | expr op='||' expr                                            #BinaryExpr_bool
-     | '[' '&'? ']' func_list? '->' block arg_list?                 #LambdaExpr
+     | <assoc=right> expr '=' expr                                  #AssignExpr
+     | '[' '&'? ']' func_list? '->' block arg_list                  #LambdaExpr
      ;
 
 value : INT | STRING | TRUE | FALSE | ID | THIS | NULL;

@@ -6,6 +6,7 @@ import ast.ASTVisitor;
 
 public class selfExpr extends exprNode{
     public exprNode son;
+    public BaseType op;
 
     public selfExpr(exprNode _son, BaseType type, Position pos) {
         super(type,pos);

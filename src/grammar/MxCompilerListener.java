@@ -1,4 +1,4 @@
-// Generated from E:/上个大学怎么这么多事/编译器/MxCompiler/Mx-Compiler/src/grammar\MxCompiler.g4 by ANTLR 4.10.1
+// Generated from java-escape by ANTLR 4.11.1
 package grammar;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -77,6 +77,16 @@ public interface MxCompilerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArg_list(MxCompilerParser.Arg_listContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MxCompilerParser#exprstmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprstmt(MxCompilerParser.ExprstmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxCompilerParser#exprstmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprstmt(MxCompilerParser.ExprstmtContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code SelfExpr}
 	 * labeled alternative in {@link MxCompilerParser#expr}.

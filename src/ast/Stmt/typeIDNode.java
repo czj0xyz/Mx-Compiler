@@ -7,9 +7,12 @@ import ast.ASTVisitor;
 public class typeIDNode extends StmtNode{
     public BaseType t;
 
-    public typeIDNode(int id,Position position) {
+    public typeIDNode(int id, String s ,Position position) {
         super(position);
-        this.t = new BaseType(id);
+        if(id!=3)this.t = new BaseType(id);
+        else {
+            this.t = new ClassType(position,s);
+        }
     }
 
     @Override
