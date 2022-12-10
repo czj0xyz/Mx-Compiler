@@ -203,7 +203,9 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             constNode ret = new constNode(ty,new Position(ctx));
             for(var v:ctx.expr()) ret.expr.add( (exprNode)visit(v) );
             boolean fl = true;
-            for(int i=2;i<ctx.children.size();) {
+            int del = 0;
+            if(ctx.CloseParen() != null) del = 1;
+            for(int i=2;i<ctx.children.size() - del;) {
                 if( ctx.children.get(i+1) instanceof  MxCompilerParser.ExprContext ){
                     if( !fl ) throw new SemanticError("The shape of multidimensional array must be specified from left to right",new Position(ctx));
                     i += 3;
