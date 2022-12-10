@@ -2,6 +2,7 @@ package Frontend;
 
 import Util.Position;
 import Util.Type.*;
+import Util.error.SemanticError;
 import ast.ProgramNode;
 import ast.expr.*;
 import grammar.MxCompilerParser;
@@ -201,6 +202,16 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             else ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
             constNode ret = new constNode(ty,new Position(ctx));
             for(var v:ctx.expr()) ret.expr.add( (exprNode)visit(v) );
+            boolean fl = true;
+            for(int i=2;i<ctx.children.size();) {
+                if( ctx.children.get(i+1) instanceof  MxCompilerParser.ExprContext ){
+                    if( !fl ) throw new SemanticError("The shape of multidimensional array must be specified from left to right",new Position(ctx));
+                    i += 3;
+                }else {
+                    fl = false;
+                    i += 2;
+                }
+            }
             return ret;
         }
     }
