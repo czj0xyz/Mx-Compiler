@@ -32,9 +32,15 @@ public class FuncType{
     public void check(ArrayList<BaseType> arg_list2) {
         if(this.arg_list.size() != arg_list2.size())
             throw new SemanticError("Type mismatched in function "  , position);
-        for(int i=0;i<arg_list2.size();i++)
-            if(!arg_list2.get(i).getType().equals(arg_list.get(i).getType()))
-                throw new SemanticError("Type mismatched in function "  , position);
+        for(int i=0;i<arg_list2.size();i++) {
+            if(arg_list2.get(i) == null) {
+                if(arg_list.get(i).Primitive())
+                    throw new SemanticError("Type mismatched in function "  , position);
+                else continue;
+            }
+            if (!arg_list2.get(i).getType().equals(arg_list.get(i).getType()))
+                throw new SemanticError("Type mismatched in function ", position);
+        }
 
     }
 

@@ -73,6 +73,48 @@ public interface MxCompilerVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBinaryExpr_int(MxCompilerParser.BinaryExpr_intContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code LambdaExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code SelfExpr2}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelfExpr2(MxCompilerParser.SelfExpr2Context ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AtomExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtomExpr(MxCompilerParser.AtomExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncExpr(MxCompilerParser.FuncExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code BinaryExpr_bool}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignExpr(MxCompilerParser.AssignExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code BinaryExpr_int_bool}
 	 * labeled alternative in {@link MxCompilerParser#expr}.
 	 * @param ctx the parse tree
@@ -101,47 +143,12 @@ public interface MxCompilerVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMemberExpr(MxCompilerParser.MemberExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LambdaExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code AtomExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomExpr(MxCompilerParser.AtomExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code BinaryExpr_all}
 	 * labeled alternative in {@link MxCompilerParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBinaryExpr_all(MxCompilerParser.BinaryExpr_allContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code FuncExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncExpr(MxCompilerParser.FuncExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code BinaryExpr_bool}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code AssignExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignExpr(MxCompilerParser.AssignExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxCompilerParser#value}.
 	 * @param ctx the parse tree

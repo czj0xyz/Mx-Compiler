@@ -5,6 +5,7 @@ import Util.Type.BaseType;
 import ast.ASTVisitor;
 
 public class binaryExpr extends exprNode{
+
     public enum operator{
         _int,
         _int_string,
@@ -15,6 +16,7 @@ public class binaryExpr extends exprNode{
 
     public exprNode lexp,rexp;
     public operator op;
+    public boolean bl_int_string;
 
     public binaryExpr(exprNode l,exprNode r, BaseType type, Position pos,int op_) {
         super(type,pos);
@@ -27,6 +29,7 @@ public class binaryExpr extends exprNode{
             case 3: this.op = operator._int_bool; break;
             default: this.op = operator._bool; break;
         }
+        this.bl_int_string=false;
     }
 
     @Override

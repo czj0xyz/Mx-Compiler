@@ -52,4 +52,9 @@ public class ClassType extends BaseType{
     public String getBaseType() {
         return name;
     }
+
+    @Override
+    public boolean Primitive() {
+        return false;
+    }
 }

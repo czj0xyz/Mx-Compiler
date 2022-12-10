@@ -26,19 +26,19 @@ exprstmt : expr;
 expr : expr '.' ID arg_list?                                        #MemberExpr
      | ID                                                           #AtomExpr
      | value                                                        #AtomExpr
-     | NEW typeID ('[' expr ']')+ ('[' ']')*                        #AtomExpr
-     | NEW typename ('()')?                                         #AtomExpr
+     | NEW typeID ('[' (expr?) ']')* ('()')?                        #AtomExpr
+//     | NEW typename ('()')?                                         #AtomExpr
      | '(' expr ')'                                                 #AtomExpr
      | ID arg_list                                                  #FuncExpr
      | expr ('[' expr ']')+                                         #ArrayExpr
      | expr ('++' | '--')                                           #SelfExpr
-     | <assoc=right> ('++' | '--') expr                             #SelfExpr
+     | <assoc=right> ('++' | '--') expr                             #SelfExpr2
      | <assoc=right> ('+' | '-') expr                               #SelfExpr
      | <assoc=right> ('!' | '~') expr                               #SelfExpr
      | expr op=('*' | '/' | '%') expr                               #BinaryExpr_int
      | expr op=('+' | '-') expr                                     #BinaryExpr_int_string
      | expr op=('<<' | '>>') expr                                   #BinaryExpr_int
-     | expr op=('<' | '>' | '<=' | '>=') expr                       #BinaryExpr_all
+     | expr op=('<' | '>' | '<=' | '>=') expr                       #BinaryExpr_int_string
      | expr op=('==' | '!=') expr                                   #BinaryExpr_all
      | expr op='&' expr                                             #BinaryExpr_int_bool
      | expr op='^' expr                                             #BinaryExpr_int_bool
@@ -92,14 +92,14 @@ FALSE : 'false';
 
 ID : START_LETTER LETTER*;
 fragment LETTER : [0-9a-zA-Z] | '_';
-fragment START_LETTER : [a-zA-Z] | '_';
+fragment START_LETTER : [a-zA-Z];
 
 INT : [1-9] [0-9]* | '0';
 
 STRING : '"' (ESC|.)*? '"';
 fragment ESC : '\\"' | '\\\\';
 
-LINE_IGNORE : '//' .*? [\n\r] -> skip;
+LINE_IGNORE : '//' ~[\n\r]* -> skip;
 BLOCK_IGNORE : '/*' .*? '*/' -> skip;
 WS : [ \n\t\r]+ -> skip;
 

@@ -112,6 +112,78 @@ public interface MxCompilerListener extends ParseTreeListener {
 	 */
 	void exitBinaryExpr_int(MxCompilerParser.BinaryExpr_intContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code LambdaExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LambdaExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SelfExpr2}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelfExpr2(MxCompilerParser.SelfExpr2Context ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SelfExpr2}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelfExpr2(MxCompilerParser.SelfExpr2Context ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AtomExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomExpr(MxCompilerParser.AtomExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AtomExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomExpr(MxCompilerParser.AtomExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncExpr(MxCompilerParser.FuncExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncExpr(MxCompilerParser.FuncExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BinaryExpr_bool}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BinaryExpr_bool}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignExpr(MxCompilerParser.AssignExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link MxCompilerParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignExpr(MxCompilerParser.AssignExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code BinaryExpr_int_bool}
 	 * labeled alternative in {@link MxCompilerParser#expr}.
 	 * @param ctx the parse tree
@@ -160,30 +232,6 @@ public interface MxCompilerListener extends ParseTreeListener {
 	 */
 	void exitMemberExpr(MxCompilerParser.MemberExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LambdaExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code LambdaExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitLambdaExpr(MxCompilerParser.LambdaExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code AtomExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAtomExpr(MxCompilerParser.AtomExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code AtomExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAtomExpr(MxCompilerParser.AtomExprContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code BinaryExpr_all}
 	 * labeled alternative in {@link MxCompilerParser#expr}.
 	 * @param ctx the parse tree
@@ -195,42 +243,6 @@ public interface MxCompilerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBinaryExpr_all(MxCompilerParser.BinaryExpr_allContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code FuncExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterFuncExpr(MxCompilerParser.FuncExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code FuncExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitFuncExpr(MxCompilerParser.FuncExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code BinaryExpr_bool}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code BinaryExpr_bool}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code AssignExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssignExpr(MxCompilerParser.AssignExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code AssignExpr}
-	 * labeled alternative in {@link MxCompilerParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssignExpr(MxCompilerParser.AssignExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxCompilerParser#value}.
 	 * @param ctx the parse tree

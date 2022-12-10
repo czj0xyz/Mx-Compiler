@@ -70,6 +70,11 @@ public class SemanticChecker implements ASTVisitor {
         if (now.in_func)
             throw new SemanticError("Cannot define function in function : ", it.position);
         //insert func
+        if(all.containsClass(it.name)) {
+            if(now.in_class&&now.in_class_def.getType().equals(it.name));
+            else throw new SemanticError("Function shares the same name with class: " + it.name, it.position);
+        }
+
         var ad = new FuncType(it.position, it.name, it.ret);
         for (var v : it.list.type) ad.push(v);
 
@@ -93,6 +98,9 @@ public class SemanticChecker implements ASTVisitor {
             throw new SemanticError("Self-construction function error: ", it.position);
 
         var c = new ClassType(it.position, it.name);
+
+        if(all.containsfunc(it.name) || now.containsVar(it.name))
+            throw new SemanticError("Class shares the same name with function or variable", it.position);
 
         now = new Scope(now, true, false);
 
@@ -129,17 +137,17 @@ public class SemanticChecker implements ASTVisitor {
         it.expr.accept(this);
     }
 
-    @Override
+//    @Override
     public void visit(AssignNode it) {
-        //find and check Type
-        if (!now.containsVar(it.name))
-            throw new SemanticError("Cannot find variable " + it.name + " ", it.position);
-
-        if (it.expr != null) {
-            it.expr.accept(this);
-            if (it.expr.type != null && !it.expr.type.getType().equals(now.getTypeName(it.name)))
-                throw new SemanticError("Type mismatched in AssignNode", it.position);
-        }
+//        //find and check Type
+//        if (!now.containsVar(it.name))
+//            throw new SemanticError("Cannot find variable " + it.name + " ", it.position);
+//
+//        if (it.expr != null) {
+//            it.expr.accept(this);
+//            if (it.expr.type != null && !it.expr.type.getType().equals(now.getTypeName(it.name)))
+//                throw new SemanticError("Type mismatched in AssignNode", it.position);
+//        }
     }
 
     @Override
@@ -188,7 +196,7 @@ public class SemanticChecker implements ASTVisitor {
                 throw new SemanticError("Type mismatched in forNode", it.check.position);
         }
 
-        if (it.stp != null) it.init.accept(this);
+        if (it.stp != null) it.stp.accept(this);
 
         now.loop_cnt++;
         if (it.loop != null) it.loop.accept(this);
@@ -281,13 +289,25 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(varDefNode it){
-        if(it.typename.getType().equals("void"))
-            throw new SemanticError("variable cannot be void ",it.position);
+        if(it.typename.getBaseType().equals("void"))
+            throw new SemanticError("Variable cannot be void ",it.position);
         for(var v:it.assi) {
+            if(v.expr!=null) {
+                v.expr.accept(this);
+                if(v.expr.type==null && it.typename.Primitive())
+                    throw new SemanticError("Null cannot be assigned to primitive type variable", it.position);
+                if(v.expr.type!=null && !v.expr.type.getType().equals(it.typename.getType()))
+                    throw new SemanticError("Type mismatched in varDef", it.position);
+            }
+
+//            v.accept(this);
             if(now.in_class && !now.in_func);
             else now.put_def(it.typename,v.name,v.position);
+
             if(!now.in_class && !now.in_func) all.Var.put_def(it.typename,v.name,v.position);
-            v.accept(this);
+
+            if(all.containsClass(v.name))
+                throw new SemanticError("Variable shares the same name with class " + v.name, it.position);
         }
     }
 
@@ -338,6 +358,10 @@ public class SemanticChecker implements ASTVisitor {
         it.rexp.accept(this);
         if(!it.lexp.Assignable())
             throw new SemanticError("Type mismatched in assignExpr",it.position);
+
+        if(it.rexp.type==null && it.lexp.type.Primitive())
+            throw new SemanticError("Null cannot be assigned to primitive type variable",it.position);
+
         if(it.rexp.type!=null && !it.lexp.type.getType().equals(it.rexp.type.getType()))
             throw new SemanticError("Type mismatched in assignExpr",it.position);
         it.type = it.lexp.type;
@@ -347,22 +371,35 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(binaryExpr it){
         it.lexp.accept(this);
         it.rexp.accept(this);
-        if(it.lexp.type == null || it.rexp.type == null)
-            throw new SemanticError("Type mismatched in binaryExpr",it.position);
+        if(it.lexp.type == null || it.rexp.type == null) {
+            switch (it.op) {
+                case _all: break;
+                default: throw new SemanticError("Null can only exist in == and != ",it.position);
+            }
+            it.type = new BaseType(1);
+            return;
+        }
         if(!it.lexp.type.getType().equals(it.rexp.type.getType()))
-            throw new SemanticError("Type mismatched in binaryExpr",it.position);
+            throw new SemanticError("Type mismatched in binaryExpr1",it.position);
+        if(it.lexp.type instanceof ArrayType)
+            throw new SemanticError("Array type mismatched in binaryExpr2",it.position);
+
         boolean flag = false;
         String s = it.lexp.type.getType();
         BaseType t = it.lexp.type;
         switch(it.op) {
             case _int: flag = s.equals("int");break;
-            case _int_string: flag = s.equals("int") || s.equals("string");break;
-            case _all: flag = s.equals("int") || s.equals("bool") || s.equals("string"); t = new BaseType(1);break;
+            case _int_string:
+                flag = s.equals("int") || s.equals("string");
+                if(it.bl_int_string) t = new BaseType(1);
+            break;
+//            case _all: flag = s.equals("int") || s.equals("bool") || s.equals("string"); t = new BaseType(1);break;
+            case _all: t = new BaseType(1); flag = true; break;
             case _int_bool: flag = s.equals("int") || s.equals("bool");break;
             case _bool: flag = s.equals("bool");break;
         }
         if(!flag)
-            throw new SemanticError("Type mismatched in binaryExpr",it.position);
+            throw new SemanticError("Type mismatched in binaryExpr3",it.position);
         it.type = t;
     }
 
@@ -370,17 +407,19 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(constNode it) {
         if(it.isThis) {
             if(!now.in_class)
-                throw new SemanticError("this can only be used in class ",it.position);
+                throw new SemanticError("This can only be used in class ",it.position);
             it.type = now.in_class_def;
         }else if(it.isNull)it.type = null;
         else {
+            if(it.type.getBaseType().equals("void"))
+                throw new SemanticError("New expression cannot apply to void ",it.position);
             boolean flg=it.type instanceof ArrayType;
             BaseType bs;
 
             if(it.type.getTypeId() != 3) bs = new BaseType(it.type.getTypeId());
             else {
                 if(!all.containsClass( it.type.getBaseType() ))
-                    throw new SemanticError("cannot find the class "+it.type.getBaseType(),it.position);
+                    throw new SemanticError("Cannot find the class "+it.type.getBaseType(),it.position);
                 bs = all.getClass( it.type.getBaseType() );
             }
 
@@ -458,11 +497,13 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(selfExpr it) {
         it.son.accept(this);
-        if(!it.son.Assignable())
+        if(it.modi && !it.son.Assignable())
             throw new SemanticError("Type mismatched in selfExpr",it.position);
 
-        if(!it.op.getType().equals( it.son.type.getType()))
-            throw new SemanticError("Type mismatched in selfExpr",it.position);
+        if(!it.op.getType().equals( it.son.type.getType())) {
+            if(it.op.getType().equals("bool")&&it.son.type.getType().equals("int"));
+            else throw new SemanticError("Type mismatched in selfExpr", it.position);
+        }
 
         it.type = it.son.type;
     }

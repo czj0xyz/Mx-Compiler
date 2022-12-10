@@ -30,4 +30,8 @@ public class ArrayType extends BaseType{
     public BaseType ArrayAtom() {
         return type;
     }
+
+    public boolean Primitive() {
+        return false;
+    }
 }

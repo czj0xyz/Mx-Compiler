@@ -98,9 +98,19 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitSelfExpr(MxCompilerParser.SelfExprContext ctx) {
         var son = (exprNode)visit(ctx.expr());
-        var ret = new selfExpr(son,son.type,new Position(ctx));
+        var ret = new selfExpr(son,son.type, false ,new Position(ctx));
+        if(ctx.PlusPlus()!=null || ctx.MinusMinus()!=null) ret.modi = true;
         if(ctx.Plus()!=null || ctx.PlusPlus()!=null || ctx.Minus()!=null || ctx.MinusMinus()!=null ) ret.op = new BaseType(0);
         if(ctx.Not()!=null || ctx.Tilde()!=null) ret.op = new BaseType(1);
+        return ret;
+    }
+
+    @Override
+    public ASTNode visitSelfExpr2(MxCompilerParser.SelfExpr2Context ctx) {
+        var son = (exprNode)visit(ctx.expr());
+        var ret = new selfExpr(son,son.type, true ,new Position(ctx));
+        ret.asi = true;
+        ret.op = new BaseType(0);
         return ret;
     }
 
@@ -116,7 +126,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitMemberExpr(MxCompilerParser.MemberExprContext ctx) {
         var son = (exprNode)visit(ctx.expr());
-        arg_list tmp = null;
+                arg_list tmp = null;
         if(ctx.arg_list()!=null) tmp = (arg_list) visit(ctx.arg_list());
         var ret = new memberExpr(son,ctx.ID().toString(),tmp,son.type,new Position(ctx));
         return ret;
@@ -145,7 +155,9 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     public ASTNode visitBinaryExpr_int_string(MxCompilerParser.BinaryExpr_int_stringContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
-        return new binaryExpr(l,r,l.type,new Position(ctx),1);
+        var ret = new binaryExpr(l,r,l.type,new Position(ctx),1);
+        if(ctx.Plus() == null && ctx.Minus() == null) ret.bl_int_string=true;
+        return ret;
     }
     @Override
     public ASTNode visitBinaryExpr_all(MxCompilerParser.BinaryExpr_allContext ctx) {
@@ -182,15 +194,11 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
             return ret;
         }else if(ctx.NEW()==null) return (exprNode)visit(ctx.expr().get(0));
-        else if(ctx.typename()!=null) {
-            var tmp = (typenameNode) visit(ctx.typename());
-            BaseType ret;
-            if(tmp.sz>0) ret = new ArrayType(tmp.t,tmp.sz);
-            else ret = tmp.t;
-            return new constNode(ret,new Position(ctx));
-        }else {
+        else {
             var tmp = (typeIDNode) visit(ctx.typeID());
-            ArrayType ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
+            BaseType ty;
+            if(ctx.LeftBracket().size() == 0)ty = tmp.t;
+            else ty = new ArrayType(tmp.t,ctx.LeftBracket().size());
             constNode ret = new constNode(ty,new Position(ctx));
             for(var v:ctx.expr()) ret.expr.add( (exprNode)visit(v) );
             return ret;

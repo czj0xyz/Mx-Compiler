@@ -20,6 +20,10 @@ public class SymbolCollector  implements ASTVisitor {
 
         if(!all.getFunc("main").ret.getType().equals("int"))
             throw new SemanticError("main function must return int value ",it.position);
+
+        if(all.getFunc("main").arg_list.size() != 0)
+            throw new SemanticError("main function error ",it.position);
+
     }
 
     @Override public void visit(defNode it) {

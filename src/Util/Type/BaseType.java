@@ -40,4 +40,9 @@ public class BaseType {
     public BaseType ArrayAtom(){
         return new BaseType();
     }
+
+    public boolean Primitive() {
+        if(isClass)return false;
+        return true;
+    }
 }
