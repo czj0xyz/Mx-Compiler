@@ -19,10 +19,8 @@ import Frontend.*;
 public class Compiler
 {
     public static void main(String[] args) throws Exception{
-        InputStream input = new FileInputStream(new File("E:\\上个大学怎么这么多事\\编译器\\Rt\\" +
-                                       "Mx-Compiler\\testcase\\sema\\misc-package\\misc-1.mx"));
         try {
-            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
+            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
             MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
