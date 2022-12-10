@@ -26,7 +26,7 @@ exprstmt : expr;
 expr : expr '.' ID arg_list?                                        #MemberExpr
      | ID                                                           #AtomExpr
      | value                                                        #AtomExpr
-     | NEW typeID ('[' (expr?) ']')* ('()')?                        #AtomExpr
+     | NEW typeID ('[' expr ']')* ('['']')* ('()')?                 #AtomExpr
 //     | NEW typename ('()')?                                         #AtomExpr
      | '(' expr ')'                                                 #AtomExpr
      | ID arg_list                                                  #FuncExpr
