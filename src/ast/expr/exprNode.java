@@ -4,9 +4,11 @@ import Util.Position;
 import Util.Type.BaseType;
 import ast.*;
 import ast.ASTVisitor;
+import IR.IRValue.IRBasicValue;
 
 public abstract class exprNode extends ASTNode {
     public BaseType type;
+    public IRBasicValue val;
     exprNode(BaseType t,Position position) {
         super(position);
         this.type = t;
