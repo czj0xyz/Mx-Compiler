@@ -1,11 +1,39 @@
 package Backend;
 
+import IR.IRBlock;
+import IR.IRModule;
+import IR.IRType.IRType;
+import Util.Scope.GlobalScope;
+import Util.Scope.Scope;
+import Util.Type.BaseType;
+import ast.ASTNode;
 import ast.ASTVisitor;
 import ast.ProgramNode;
 import ast.Stmt.*;
 import ast.expr.*;
 
 public class IRbuilder implements ASTVisitor {
+    public IRBlock curblock;
+    public IRModule irModule;
+    private Scope scope;
+    private GlobalScope globalScope;
+
+    private IRType AssignType;
+
+    public IRbuilder(GlobalScope g) {
+        this.globalScope = g;
+        curblock = new IRBlock();
+        scope = new Scope();
+    }
+
+    public IRModule buildIR(ProgramNode rt) {
+        visit(rt);
+        return irModule;
+    }
+
+    private IRType TransType(BaseType type) {
+        return null;
+    }
 
     public void visit(ProgramNode it){}
 
