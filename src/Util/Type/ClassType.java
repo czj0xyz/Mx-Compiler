@@ -7,15 +7,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClassType extends BaseType{
-    String name;
+    public String name;
     HashMap<String,BaseType> varMap = new HashMap<>();
 
     HashMap<String,FuncType> funcMap = new HashMap<>();
+
+    public ArrayList<BaseType> vars = new ArrayList<>();
+    public ArrayList<String> vars_name = new ArrayList<>();
 
     public void pushMem(BaseType Type,String Name,Position position) {
         if(varMap.containsKey(Name))
             throw new SemanticError("redeclaration of " + Type.getType() + " " + Name,position);
         varMap.put(Name,Type);
+        vars.add(Type);
+        vars_name.add(Name);
     }
 
     public BaseType getMem(String Name,Position position) {

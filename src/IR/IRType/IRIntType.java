@@ -1,7 +1,7 @@
 package IR.IRType;
 
 public class IRIntType extends IRType{
-    IRIntType() {
+    public IRIntType() {
         super();
     }
 

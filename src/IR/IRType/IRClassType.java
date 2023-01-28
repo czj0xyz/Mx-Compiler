@@ -8,7 +8,7 @@ import java.util.Map;
 public class IRClassType extends IRType{
     public String name;
     public ArrayList<IRType> list = new ArrayList<>();
-    public Map<String,IRType> pos;
+    public Map<String,Integer> pos;
     public IRFunc builtin;
 
     public IRClassType(String name) {
@@ -18,8 +18,8 @@ public class IRClassType extends IRType{
     }
 
     public void insert(String name, IRType t) {
+        pos.put(name,list.size());
         list.add(t);
-        pos.put(name,t);
     }
 
     @Override

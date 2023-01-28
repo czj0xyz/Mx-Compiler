@@ -1,5 +1,6 @@
 package ast.expr;
 
+import IR.IRValue.IRReg;
 import Util.Position;
 import Util.Type.BaseType;
 import ast.*;
@@ -8,7 +9,6 @@ import IR.IRValue.IRBasicValue;
 
 public abstract class exprNode extends ASTNode {
     public BaseType type;
-    public IRBasicValue val;
     exprNode(BaseType t,Position position) {
         super(position);
         this.type = t;

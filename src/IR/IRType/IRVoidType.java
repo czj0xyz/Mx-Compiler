@@ -1,13 +1,11 @@
 package IR.IRType;
 
-public class IRBoolType extends IRType{
-
-    public IRBoolType(){
+public class IRVoidType extends IRType{
+    public IRVoidType() {
         super();
     }
-
     @Override
     public int Size() {
-        return 1;
+        return 0;
     }
 }

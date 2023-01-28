@@ -1,8 +1,7 @@
 package IR.IRType;
 
-public class IRBoolType extends IRType{
-
-    public IRBoolType(){
+public class IRCharType extends IRType{
+    public IRCharType() {
         super();
     }
 
@@ -10,4 +9,5 @@ public class IRBoolType extends IRType{
     public int Size() {
         return 1;
     }
+
 }

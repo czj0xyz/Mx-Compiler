@@ -8,36 +8,26 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class IRFunc {
+    public String name;
 
     public LinkedList<IRBlock> block = new LinkedList<>();
 
-    public ArrayList<IRType> arg_list = new ArrayList<>();
+    public ArrayList<IRReg> arg_list = new ArrayList<>();
 
-    public int Size;
+    public IRType RetType;
 
-    public IRReg ret_reg;
-
-    public IRFunc(IRReg ret_reg) {
-        this.ret_reg = ret_reg;
+    public IRFunc(String name,IRType RetType) {
+        this.name = name;
+        this.RetType = RetType;
     }
 
-    public void SetSize(int sz) {
-        this.Size = sz;
-    }
 
     public void push_back(IRBlock b) {
         block.add(b);
     }
 
-    public void add_arg(IRType t) {
+    public void add_arg(IRReg t) {
         arg_list.add(t);
     }
 
-    public int Query_Sz() {
-        int ret = Size;
-        for(var v:arg_list) {
-            ret += v.Size();
-        }
-        return ret;
-    }
 }

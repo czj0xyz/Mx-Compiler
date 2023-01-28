@@ -1,6 +1,9 @@
 package Util.Scope;
 import java.util.HashMap;
+import java.util.Map;
 
+import IR.IRType.IRType;
+import IR.IRValue.IRReg;
 import Util.Position;
 import Util.Type.*;
 import Util.error.SemanticError;
@@ -69,6 +72,17 @@ public class Scope {
         if(varMap.containsKey(name)) return varMap.get(name);
         if(par != null)return par.getType(name);
         return new BaseType();
+    }
+
+    public HashMap<String, IRReg> IRAddr = new HashMap<>();
+
+    public void put_def_ir(IRReg type, String name) {
+        IRAddr.put(name,type);
+    }
+
+    public IRReg get_Addr(String name) {
+        if(IRAddr.containsKey(name))return IRAddr.get(name);
+        return par.get_Addr(name);
     }
 
 }

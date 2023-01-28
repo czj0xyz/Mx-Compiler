@@ -36,13 +36,13 @@ public class Compiler
             GlobalScope Scp = new GlobalScope(null);
             new SymbolCollector(Scp).visit(ASTRoot);
             new SemanticChecker(Scp).visit(ASTRoot);
-//            System.out.println("Semantic Success!");
+            System.out.println("Semantic Success!");
 
             //Codegen:
-            OutputStream out = new FileOutputStream("output.s");
-
-            IRbuilder ir = new IRbuilder(Scp);
-            ir.buildIR(ASTRoot);
+//            OutputStream out = new FileOutputStream("output.s");
+//
+//            IRbuilder ir = new IRbuilder(Scp);
+//            ir.buildIR(ASTRoot);
 
         /*
             ASMModule asm = new InstSelector(ir).getASM();

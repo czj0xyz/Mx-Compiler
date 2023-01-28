@@ -1,11 +1,15 @@
 package IR.IRInst;
 
+import IR.IRValue.IRBasicValue;
 import IR.IRVisitor;
 
 public class IRRetInst extends IRInst{
 
-    public IRRetInst() {
+    public IRBasicValue ret;
+
+    public IRRetInst(IRBasicValue ret) {
         super();
+        this.ret = ret;
     }
 
     @Override

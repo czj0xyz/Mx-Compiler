@@ -11,8 +11,6 @@ public class IRLoadInst extends IRInst{
     public IRBasicValue src;
     public IRType type;
 
-
-
     public IRLoadInst(IRReg rd,IRBasicValue src,IRType type) {
         super();
         this.rd = rd;

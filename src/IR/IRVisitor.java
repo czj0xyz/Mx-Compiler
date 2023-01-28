@@ -10,4 +10,6 @@ public interface IRVisitor {
     void visit(IRRetInst it);
     void visit(IRLoadInst it);
     void visit(IRStoreInst it);
+    void visit(IRAllocaInst it);
+    void visit(IRCallInst it);
 }
