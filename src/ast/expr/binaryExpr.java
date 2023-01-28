@@ -17,6 +17,7 @@ public class binaryExpr extends exprNode{
     public exprNode lexp,rexp;
     public operator op;
     public boolean bl_int_string;
+    public String opstr;
 
     public binaryExpr(exprNode l,exprNode r, BaseType type, Position pos,int op_) {
         super(type,pos);

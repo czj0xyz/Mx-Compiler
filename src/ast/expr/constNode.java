@@ -7,8 +7,13 @@ import ast.ASTVisitor;
 import java.util.ArrayList;
 
 public class constNode extends exprNode{
+    public int wh;
     public boolean isThis,isNull;
     public ArrayList<exprNode> expr = new ArrayList<>();
+    public int num;
+    public String str;
+    public boolean flg;
+
 
     public constNode(BaseType type, Position pos) {
         super(type,pos);

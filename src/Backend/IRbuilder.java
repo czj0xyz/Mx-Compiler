@@ -6,8 +6,7 @@ import IR.IRInst.*;
 import IR.IRModule;
 import IR.IRType.*;
 import IR.IRValue.IRBasicValue;
-import IR.IRValue.IRConst.IRConst;
-import IR.IRValue.IRConst.IRNullConst;
+import IR.IRValue.IRConst.*;
 import IR.IRValue.IRGlobalVar;
 import IR.IRValue.IRReg;
 import Util.Scope.GlobalScope;
@@ -179,13 +178,37 @@ public class IRbuilder implements ASTVisitor {
         it.Ptr = it.lexp.Ptr;
     }
 
-    public void visit(binaryExpr it){}xx
+    public void visit(binaryExpr it){
+        it.lexp.accept(this);
+        it.rexp.accept(this);
+        if(it.lexp.type == null || it.rexp == null) {//have null
+            return;
+        }
+        if(it.lexp.type.getType().equals("string")) {//string use call
+            return;
+        }
+        it.val = new IRReg(TransType(it.lexp.type));
+        if(it.opstr.equals("sgt") || it.opstr.equals("sge") || it.opstr.equals("sle")
+        || it.opstr.equals("slt") || it.opstr.equals("eq") || it.opstr.equals("ne") ) {
+            curblock.push_back(new IRCompareInst(it.lexp.val,it.rexp.val,it.val,it.opstr));
+        }else {
+            curblock.push_back(new IRCalcInst(it.lexp.val,it.rexp.val,it.val,it.opstr));
+        }
+    }
 
     public void visit(constNode it){
         if(it.isThis) {// this.
 
-        }else if(it.isNull) {
+        }else if(it.isNull) {// null
             it.val = new IRNullConst(new IRVoidType());
+        }else if(it.wh > 0) {
+            IRBasicValue val = null;
+            switch (it.wh) {
+                case 1: val = new IRIntConst(it.num,new IRIntType());
+                case 2: val = new IRStringConst(it.str,new IRPtrType(new IRCharType(), 1));
+                default: val = new IRBoolConst(it.flg,new IRBoolType());
+            }
+            it.val = val;
         }else {//new int[12][][]()....
 
         }
@@ -195,7 +218,22 @@ public class IRbuilder implements ASTVisitor {
 
     public void visit(memberExpr it){}
 
-    public void visit(selfExpr it){}
+    public void visit(selfExpr it){
+        IRReg rd = new IRReg(it.son.val.type);
+        curblock.push_back(new IRSelfInst(it.son.val,rd,it.opstr));
+        if(!it.Pre) {
+            it.val = it.son.val;
+            curblock.push_back(new IRStoreInst(rd,it.son.Ptr,rd.type));
+            it.Ptr = null;
+        }else if(it.opstr.equals("PlusPlus") || it.opstr.equals("MinusMinus")){
+            it.Ptr = it.son.Ptr;
+            curblock.push_back(new IRStoreInst(rd,it.Ptr,rd.type));
+            it.val = rd;
+        }else {
+            it.Ptr = null;
+            it.val = rd;
+        }
+    }
 
     public void visit(varNode it){
         it.Ptr = now.get_Addr(it.name);

@@ -99,19 +99,28 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     @Override
     public ASTNode visitSelfExpr(MxCompilerParser.SelfExprContext ctx) {
         var son = (exprNode)visit(ctx.expr());
-        var ret = new selfExpr(son,son.type, false ,new Position(ctx));
-        if(ctx.PlusPlus()!=null || ctx.MinusMinus()!=null) ret.modi = true;
+        var ret = new selfExpr(son,son.type, false , true ,new Position(ctx));
+        if(ctx.PlusPlus()!=null || ctx.MinusMinus()!=null) {ret.modi = true; ret.Pre = false;}
         if(ctx.Plus()!=null || ctx.PlusPlus()!=null || ctx.Minus()!=null || ctx.MinusMinus()!=null ) ret.op = new BaseType(0);
         if(ctx.Not()!=null || ctx.Tilde()!=null) ret.op = new BaseType(1);
+
+        if(ctx.PlusPlus() != null) ret.opstr = "PlusPlus";
+        if(ctx.MinusMinus() != null) ret.opstr = "MinusMinus";
+        if(ctx.Plus() != null) ret.opstr = "Plus";
+        if(ctx.Minus() != null) ret.opstr = "neg";
+        if(ctx.Tilde() != null) ret.opstr = "not";
+
         return ret;
     }
 
     @Override
     public ASTNode visitSelfExpr2(MxCompilerParser.SelfExpr2Context ctx) {
         var son = (exprNode)visit(ctx.expr());
-        var ret = new selfExpr(son,son.type, true ,new Position(ctx));
+        var ret = new selfExpr(son,son.type, true , true ,new Position(ctx));
         ret.asi = true;
         ret.op = new BaseType(0);
+        if(ctx.PlusPlus() != null) ret.opstr = "PlusPlus";
+        else ret.opstr = "MinusMinus";
         return ret;
     }
 
@@ -150,33 +159,65 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
     public ASTNode visitBinaryExpr_int(MxCompilerParser.BinaryExpr_intContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
-        return new binaryExpr(l,r,l.type,new Position(ctx),0);
+        var ret = new binaryExpr(l,r,l.type,new Position(ctx),0);
+
+        if(ctx.Mul()!=null)ret.opstr = "mul";
+        if(ctx.Div()!=null)ret.opstr = "sdiv";
+        if(ctx.Mod()!=null)ret.opstr = "srem";
+        if(ctx.LeftShift()!=null)ret.opstr = "shl";
+        if(ctx.RightShift()!=null)ret.opstr = "ashr";
+
+        return ret;
     }
     @Override
     public ASTNode visitBinaryExpr_int_string(MxCompilerParser.BinaryExpr_int_stringContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
         var ret = new binaryExpr(l,r,l.type,new Position(ctx),1);
+
         if(ctx.Plus() == null && ctx.Minus() == null) ret.bl_int_string=true;
+        if(ctx.Plus()!=null)ret.opstr = "add";
+        if(ctx.Minus()!=null)ret.opstr = "sub";
+        if(ctx.Greater()!=null)ret.opstr = "sgt";
+        if(ctx.GreaterEqual()!=null)ret.opstr = "sge";
+        if(ctx.Less()!=null)ret.opstr = "slt";
+        if(ctx.LessEqual()!=null)ret.opstr = "sle";
+
         return ret;
     }
     @Override
     public ASTNode visitBinaryExpr_all(MxCompilerParser.BinaryExpr_allContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
-        return new binaryExpr(l,r,l.type,new Position(ctx),2);
+        var ret = new binaryExpr(l,r,l.type,new Position(ctx),2);
+
+        if(ctx.Equal()!=null)ret.opstr = "eq";
+        if(ctx.NotEqual()!=null)ret.opstr = "ne";
+
+        return ret;
     }
     @Override
     public ASTNode visitBinaryExpr_int_bool(MxCompilerParser.BinaryExpr_int_boolContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
-        return new binaryExpr(l,r,l.type,new Position(ctx),3);
+        var ret = new binaryExpr(l,r,l.type,new Position(ctx),3);
+
+        if(ctx.And()!=null)ret.opstr = "and";
+        if(ctx.Or()!=null)ret.opstr = "or";
+        if(ctx.Caret()!=null)ret.opstr = "xor";
+
+        return ret;
     }
     @Override
     public ASTNode visitBinaryExpr_bool(MxCompilerParser.BinaryExpr_boolContext ctx) {
         var l = (exprNode) visit(ctx.expr().get(0));
         var r = (exprNode) visit(ctx.expr().get(1));
-        return new binaryExpr(l,r,l.type,new Position(ctx),4);
+        var ret = new binaryExpr(l,r,l.type,new Position(ctx),4);
+
+        if(ctx.OrOr()!=null)ret.opstr = "or";
+        if(ctx.AndAnd()!=null)ret.opstr = "xor";
+
+        return ret;
     }
 
     @Override
@@ -192,6 +233,10 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
 
             if(ctx.value().THIS()!=null)ret.isThis=true;
             else if(ctx.value().NULL()!=null)ret.isNull=true;
+            else if(ctx.value().INT()!=null){ret.num = Integer.parseInt( ctx.value().INT().toString() );ret.wh = 1;}
+            else if(ctx.value().STRING()!=null){ret.str = ctx.value().INT().toString();ret.wh = 2;}
+            else if(ctx.value().TRUE()!=null){ret.flg = true;ret.wh = 3;}
+            else {ret.flg = false;ret.wh = 4;}
 
             return ret;
         }else if(ctx.NEW()==null) return (exprNode)visit(ctx.expr().get(0));

@@ -14,12 +14,15 @@ import IR.IRVisitor;
 public class IRSelfInst extends IRInst{
 
     public IRBasicValue rs;
+    public IRReg rd;
 
     String op;
 
-    public IRSelfInst(IRBasicValue val) {
+    public IRSelfInst(IRBasicValue rs,IRReg rd,String op) {
         super();
-        this.rs = val;
+        this.rs = rs;
+        this.rd = rd;
+        this.op = op;
     }
 
     @Override
