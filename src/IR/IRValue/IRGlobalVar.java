@@ -11,4 +11,14 @@ public class IRGlobalVar extends IRBasicValue{
         super(type);
         this.name = name;
     }
+
+    @Override
+    public String toString_val() {
+        return "@" + name;
+    }
+    @Override
+    public String toString_type_val() {
+        return type.toString() + " " + toString_val();
+    }
+
 }

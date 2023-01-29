@@ -16,4 +16,9 @@ public class IRRetInst extends IRInst{
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "    "  + "ret " + ret.toString_type_val();
+    }
 }

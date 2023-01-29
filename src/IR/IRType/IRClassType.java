@@ -29,4 +29,9 @@ public class IRClassType extends IRType{
         return ret;
     }
 
+    @Override
+    public String toString() {
+        return "%" + name;
+    }
+
 }

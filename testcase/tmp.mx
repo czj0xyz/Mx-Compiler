@@ -1,7 +1,5 @@
 int main(){
-    x=1;
-    //int a = 1,b = 2;
-    //printlnInt(a+b);
-    return 0;
+    int a = 1,b = 2;
+    //printlnInt(a+b*2);
+    return a+b*2;
 }
-int x;

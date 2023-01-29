@@ -26,11 +26,11 @@ public class IRbuilder implements ASTVisitor {
     public IRBlock curblock = null;
     public IRModule irModule = null;
     private Scope now;
-    private GlobalScope globalScope;
+    private GlobalScope all;
 
     private IRFunc curFunc;
     public IRbuilder(GlobalScope g) {
-        this.globalScope = g;
+        this.all = g;
         irModule = new IRModule();
         now = new Scope(null,false,false);
     }
@@ -55,7 +55,7 @@ public class IRbuilder implements ASTVisitor {
                 case "int": return new IRIntType();
                 case "bool": return new IRBoolType();
                 case "void": return new IRVoidType();
-                case "string": return new IRPtrType(new IRCharType(),1);
+                case "string": return new IRPtrType(new IRCharType(),0);
                 default: return null;
             }
         }
@@ -136,6 +136,8 @@ public class IRbuilder implements ASTVisitor {
         curblock = new IRBlock();
         curFunc.push_back(curblock);
 
+        irModule.Func.add(curFunc);
+
         for(var v:it.list.type)
             curFunc.arg_list.add( new IRReg(TransType(v)) );
 
@@ -155,7 +157,14 @@ public class IRbuilder implements ASTVisitor {
     }
 
     public void visit(varDefNode it){
-
+        for(var v:it.assi) {
+            if(!now.in_class && !now.in_func) all.Var.put_def(it.typename,v.name,v.position);
+            if(now.in_class && !now.in_func);
+            else now.put_def(it.typename,v.name,v.position);
+        }
+        for(var v:it.assi) {
+            v.accept(this);
+        }
     }
 
     public void visit(whileNode it){}
@@ -204,11 +213,12 @@ public class IRbuilder implements ASTVisitor {
         }else if(it.wh > 0) {
             IRBasicValue val = null;
             switch (it.wh) {
-                case 1: val = new IRIntConst(it.num,new IRIntType());
-                case 2: val = new IRStringConst(it.str,new IRPtrType(new IRCharType(), 1));
-                default: val = new IRBoolConst(it.flg,new IRBoolType());
+                case 1: val = new IRIntConst(it.num,new IRIntType()); break;
+                case 2: val = new IRStringConst(it.str,new IRPtrType(new IRCharType(), 0)); break;
+                default: val = new IRBoolConst(it.flg,new IRBoolType()); break;
             }
             it.val = val;
+            if(it.wh == 2) irModule.addStringConst((IRStringConst) val);
         }else {//new int[12][][]()....
 
         }

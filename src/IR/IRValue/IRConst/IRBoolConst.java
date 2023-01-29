@@ -8,4 +8,13 @@ public class IRBoolConst extends IRConst{
         super(t);
         val = v;
     }
+    @Override
+    public String toString_val() {
+        return val ? "1" : "0";
+    }
+
+    @Override
+    public String toString_type_val() {
+        return type.toString() + " " + toString_val();
+    }
 }

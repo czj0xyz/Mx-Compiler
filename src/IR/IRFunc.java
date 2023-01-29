@@ -21,7 +21,6 @@ public class IRFunc {
         this.RetType = RetType;
     }
 
-
     public void push_back(IRBlock b) {
         block.add(b);
     }
@@ -30,4 +29,17 @@ public class IRFunc {
         arg_list.add(t);
     }
 
+    public String toString() {
+        String ret = "define " + RetType + " @" + name + "(";
+        for(int i=0;i < arg_list.size();i++) {
+            ret += arg_list.get(i).toString_type_val();
+            if(i+1 < arg_list.size())ret+=",";
+        }
+        ret += "){\n";
+
+        for(var v:block) ret += v;
+
+        ret += "}";
+        return ret;
+    }
 }

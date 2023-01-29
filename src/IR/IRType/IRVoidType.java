@@ -8,4 +8,9 @@ public class IRVoidType extends IRType{
     public int Size() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return "void";
+    }
 }

@@ -3,6 +3,7 @@
 import java.io.*;
 import java.util.Scanner;
 
+import Backend.IRPrinter;
 import Backend.IRbuilder;
 import Util.Scope.GlobalScope;
 import ast.ProgramNode;
@@ -39,11 +40,11 @@ public class Compiler
             System.out.println("Semantic Success!");
 
             //Codegen:
-//            OutputStream out = new FileOutputStream("output.s");
-//
-//            IRbuilder ir = new IRbuilder(Scp);
-//            ir.buildIR(ASTRoot);
+            OutputStream out = new FileOutputStream("output.ll");
 
+            IRbuilder ir = new IRbuilder(Scp);
+            var irModule =  ir.buildIR(ASTRoot);
+            out.write( (new IRPrinter()).Print(irModule).getBytes() );
         /*
             ASMModule asm = new InstSelector(ir).getASM();
 

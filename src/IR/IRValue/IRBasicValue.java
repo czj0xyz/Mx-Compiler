@@ -10,4 +10,12 @@ public abstract class IRBasicValue {
         this.type = t;
     }
 
+    public String toString_val() {
+        return "";
+    }
+
+    public String toString_type_val() {
+        return "";
+    }
+
 }

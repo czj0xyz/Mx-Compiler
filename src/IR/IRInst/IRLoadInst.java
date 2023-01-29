@@ -22,4 +22,9 @@ public class IRLoadInst extends IRInst{
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "    "  + rd.toString_val() + " = load " + type + ", " + src.toString_type_val();
+    }
 }

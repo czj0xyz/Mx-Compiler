@@ -26,7 +26,7 @@ public class GlobalScope extends Scope {
             funcMap.put("printlnInt", new FuncType(new Position(), "printlnInt", new BaseType(0), new BaseType(4)));
             funcMap.put("getString", new FuncType(new Position(), "getString", new BaseType(2)));
             funcMap.put("getInt", new FuncType(new Position(), "getInt", new BaseType(0)));
-            funcMap.put("toString", new FuncType(new Position(), "toString", new BaseType(0), new BaseType(2)));
+            funcMap.put("toSt   ring", new FuncType(new Position(), "toString", new BaseType(0), new BaseType(2)));
         }
         Var = new Scope(null,false,false);
     }

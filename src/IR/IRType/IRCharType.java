@@ -10,4 +10,9 @@ public class IRCharType extends IRType{
         return 1;
     }
 
+    @Override
+    public String toString() {
+        return "i8";
+    }
+
 }

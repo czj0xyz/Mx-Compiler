@@ -18,4 +18,8 @@ public class InstSelector implements IRVisitor{
     public void visit(IRLoadInst it){}
     @Override
     public void visit(IRStoreInst it){}
+    @Override
+    public void visit(IRAllocaInst it){}
+    @Override
+    public void visit(IRCallInst it){}
 }

@@ -20,4 +20,9 @@ public class IRPtrType extends IRType{
     @Override public int Size() {
         return 4;
     }
+
+    @Override
+    public String toString() {
+        return type + "*".repeat(sz+1);
+    }
 }

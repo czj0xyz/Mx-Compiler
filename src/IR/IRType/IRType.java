@@ -5,4 +5,8 @@ public abstract class IRType {
     public int Size() {
         return 0;
     }
+
+    public String toString() {
+        return "";
+    }
 }

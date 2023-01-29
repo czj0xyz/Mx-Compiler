@@ -1,5 +1,7 @@
 package IR.IRInst;
 
+import Backend.IRPrinter;
+import IR.IRType.IRPtrType;
 import IR.IRValue.IRReg;
 import IR.IRVisitor;
 
@@ -13,6 +15,12 @@ public class IRAllocaInst extends IRInst{
     @Override
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        assert reg.type instanceof IRPtrType;
+        return "    "  + reg.toString_val() + " = alloca " + ((IRPtrType)reg.type).LoadTpye();
     }
 
 }

@@ -10,4 +10,9 @@ public class IRBoolType extends IRType{
     public int Size() {
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return "i1";
+    }
 }

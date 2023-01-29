@@ -22,4 +22,9 @@ public class IRCallInst extends IRInst{
     public void accept(IRVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "    "  + "";
+    }
 }

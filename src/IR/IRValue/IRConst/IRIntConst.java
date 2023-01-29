@@ -8,4 +8,13 @@ public class IRIntConst extends IRConst{
         super(t);
         val = v;
     }
+    @Override
+    public String toString_val() {
+        return Integer.toString(val);
+    }
+
+    @Override
+    public String toString_type_val() {
+        return type.toString() + " " + toString_val();
+    }
 }

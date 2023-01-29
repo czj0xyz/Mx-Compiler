@@ -35,4 +35,9 @@ public class IRCalcInst extends IRInst{
     public void accept(IRVisitor visitor){
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "    "  + rd.toString_val() + " = " + op + " " + rs1.type + " " + rs1.toString_val() + ", " + rs2.toString_val();
+    }
 }

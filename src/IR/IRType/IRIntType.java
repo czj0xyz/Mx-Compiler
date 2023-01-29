@@ -9,4 +9,9 @@ public class IRIntType extends IRType{
     public int Size() {
         return 4;
     }
+
+    @Override
+    public String toString() {
+        return "i32";
+    }
 }

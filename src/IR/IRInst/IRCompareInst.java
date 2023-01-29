@@ -32,4 +32,8 @@ public class IRCompareInst extends IRInst{
         visitor.visit(this);
     }
 
+    @Override
+    public String toString() {
+        return "    "  + "";
+    }
 }

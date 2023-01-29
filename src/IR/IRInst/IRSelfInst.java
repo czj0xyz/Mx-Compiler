@@ -29,4 +29,9 @@ public class IRSelfInst extends IRInst{
     public void accept(IRVisitor visitor){
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "    "  + "";
+    }
 }
