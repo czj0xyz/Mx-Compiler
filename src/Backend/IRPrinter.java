@@ -20,8 +20,9 @@ public class IRPrinter {
                 if(i+1 < v.list.size())
                     ret += ", ";
             }
-            ret += " }";
+            ret += " }\n";
         }
+        ret += "\n";
 
         //String
 

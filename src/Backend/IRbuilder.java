@@ -22,6 +22,7 @@ import ast.Stmt.*;
 import ast.expr.*;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class IRbuilder implements ASTVisitor {
     }
 
     private IRBasicValue LoadVal(IRBasicValue pointer) {
-        IRReg reg = new IRReg(((IRPtrType)pointer.type).LoadTpye());
+        IRReg reg = new IRReg(((IRPtrType)pointer.type).LoadType());
         curblock.push_back(new IRLoadInst(reg,pointer,reg.type));
         return reg;
     }
@@ -156,7 +157,7 @@ public class IRbuilder implements ASTVisitor {
                 now.put_def(v.typename, u.name, u.position);
 
         now.in_class_def = all.getClass(it.name);
-        curClass = new IRPtrType(TransType( all.getClass(it.name) ),0);
+        curClass = (IRPtrType) TransType( all.getClass(it.name) );
         irModule.ClassList.add(AST_IR_map.get(it.name));
 
         for(var f:it.func) f.accept(this);
@@ -396,7 +397,23 @@ public class IRbuilder implements ASTVisitor {
     }
 
     public void visit(arrayExpr it){
-
+        it.rt.accept(this);
+        for(var v: it.list) v.accept(this);
+        it.val = it.rt.val;
+        IRType irType = it.rt.val.type;
+        for(int i=0;i<it.list.size();i++) {
+            var v = it.list.get(i).val;
+            IRReg ptr = new IRReg(irType);
+            IRGEPInst inst = new IRGEPInst(ptr,ptr.type,it.val);
+            IRReg v_add_one = new IRReg(new IRIntType());
+            curblock.push_back( new IRCalcInst(v,new IRIntConst(1,new IRIntType()),v_add_one,"add") );
+            inst.index.add(v_add_one);
+            IRReg res = new IRReg(((IRPtrType)irType).LoadType());
+            curblock.push_back(inst);
+            it.Ptr = ptr;
+            it.val = LoadVal(ptr);
+            irType = ((IRPtrType)irType).LoadType();
+        }
     }
 
     public void visit(assignExpr it){
@@ -408,16 +425,48 @@ public class IRbuilder implements ASTVisitor {
 
         it.Ptr = it.lexp.Ptr;
 
-        it.type = it.lexp.type;
+//        it.type = it.lexp.type;
     }
 
     public void visit(binaryExpr it){
+        if(it.lexp.type.getType().equals("Bool") && (it.opstr.equals("or") || it.opstr.equals("and"))) {
+            IRBlock FailBlock = new IRBlock("binary_fail"), DestBlock = new IRBlock("binary_dest");
+            curFunc.push_back(FailBlock);
+            curFunc.push_back(DestBlock);
+
+            IRBlock lastBlock = curblock;
+            it.lexp.accept(this);
+            IRReg rd = new IRReg(new IRPtrType(new IRBoolType(),0));
+            curblock.push_back(new IRAllocaInst(rd));
+            curblock.push_back(new IRStoreInst(it.lexp.val,rd,it.lexp.val.type) );
+            //run expr without jal and ret
+            DestBlock.terminalInst = lastBlock.terminalInst;
+            if(it.opstr.equals("or")) {
+                lastBlock.terminalInst = new IRBranchInst(it.lexp.val,DestBlock,FailBlock);
+            }else {
+                lastBlock.terminalInst = new IRBranchInst(it.lexp.val,FailBlock,DestBlock);
+            }
+            lastBlock.hv_ret = true;
+
+            curblock = FailBlock;
+            it.rexp.accept(this);
+            curblock.push_back(new IRStoreInst(it.rexp.val,rd,it.rexp.val.type) );
+            assert !FailBlock.hv_ret;
+            FailBlock.hv_ret = true;
+            FailBlock.terminalInst = new IRJumpInst(DestBlock);
+
+            IRReg ret = new IRReg(new IRBoolType());
+            DestBlock.push_back(new IRLoadInst(ret,rd,new IRBoolType()));
+            it.val = ret;
+            curblock = DestBlock;
+            return;
+        }
         it.lexp.accept(this);
         it.rexp.accept(this);
         if(it.lexp.type == null || it.rexp == null) {//have null ??
             it.val = new IRReg(new IRBoolType());
             curblock.push_back(new IRCompareInst(it.lexp.val,it.rexp.val,it.val,it.opstr));
-            it.type = new BaseType(1);
+//            it.type = new BaseType(1);
             return;
         }
         boolean flg = it.opstr.equals("sgt") || it.opstr.equals("sge") || it.opstr.equals("sle")
@@ -430,7 +479,7 @@ public class IRbuilder implements ASTVisitor {
                 call.rd = ret;
                 curblock.push_back(call);
                 it.val = ret;
-                it.type = new BaseType(2);
+//                it.type = new BaseType(2);
             }else {
                 call.retType = new IRCharType();
                 IRReg res = new IRReg(new IRCharType()) , ret = new IRReg(new IRBoolType());
@@ -438,7 +487,7 @@ public class IRbuilder implements ASTVisitor {
                 curblock.push_back(call);
                 curblock.push_back( new IRTruncInst(new IRBoolType(),res,ret) );
                 it.val = ret;
-                it.type = new BaseType(1);
+//                it.type = new BaseType(1);
             }
             call.arg_list.add(it.lexp.val);
             call.arg_list.add(it.rexp.val);
@@ -447,12 +496,17 @@ public class IRbuilder implements ASTVisitor {
         if( flg ) {
             it.val = new IRReg(new IRBoolType());
             curblock.push_back(new IRCompareInst(it.lexp.val,it.rexp.val,it.val,it.opstr));
-            it.type = new BaseType(1);
+//            it.type = new BaseType(1);
         }else {
             it.val = new IRReg(TransType(it.lexp.type));
             curblock.push_back(new IRCalcInst(it.lexp.val,it.rexp.val,it.val,it.opstr));
-            it.type = it.lexp.type;
+//            it.type = it.lexp.type;
         }
+    }
+
+    private IRBasicValue NewArray(IRType basetype, int dep, ArrayList<exprNode> list) {
+        //todo
+        return null;
     }
 
     public void visit(constNode it){
@@ -465,14 +519,14 @@ public class IRbuilder implements ASTVisitor {
             IRBasicValue val = null;
             switch (it.wh) {
                 case 1: val = new IRIntConst(it.num,new IRIntType()); break;
-                case 2: val = new IRStringConst(it.str.substring(1,it.str.length() - 1),new IRPtrType(new IRArrayType(new IRCharType(),it.str.length() - 1),0)); break;
+                case 2: val = irModule.addStringConst(new IRStringConst(it.str.substring(1,it.str.length() - 1)
+                            ,new IRPtrType(new IRArrayType(new IRCharType(),it.str.length() - 1),0))); break;
                 default: val = new IRBoolConst(it.flg,new IRBoolType()); break;
             }
             it.val = val;
             if(it.wh == 2) {
-                irModule.addStringConst((IRStringConst) val);
                 var reg = new IRReg(new IRPtrType(new IRCharType(),0));
-                IRGEPInst inst = new IRGEPInst(reg,((IRPtrType)val.type).LoadTpye(),val);
+                IRGEPInst inst = new IRGEPInst(reg,((IRPtrType)val.type).LoadType(),val);
                 inst.index.add(new IRIntConst(0,new IRIntType()));
                 inst.index.add(new IRIntConst(0,new IRIntType()));
                 curblock.push_back(inst);
@@ -481,10 +535,10 @@ public class IRbuilder implements ASTVisitor {
         }else {//new int[12][][]()....
             if(it.type instanceof ArrayType) {
                 for(var v:it.expr) v.accept(this);
-
+                it.val = NewArray(TransType(((ArrayType)it.type).ArrayAtom()),0,it.expr);
             }else {
                 IRType irType = TransType( all.getClass(it.type.getBaseType()) );
-                IRClassType curC =(IRClassType) ((IRPtrType)irType).LoadTpye();
+                IRClassType curC =(IRClassType) ((IRPtrType)irType).LoadType();
                 IRType irStringType = new IRPtrType(new IRCharType(),0);
                 IRReg rd = new IRReg(irStringType);
 
@@ -514,7 +568,7 @@ public class IRbuilder implements ASTVisitor {
 
         it.val = rd;
         curblock.push_back( call );
-        it.type = all.getFunc(it.name).ret;
+//        it.type = all.getFunc(it.name).ret;
     }
 
     public void visit(memberExpr it){
@@ -524,6 +578,11 @@ public class IRbuilder implements ASTVisitor {
         if(it.rt.type instanceof ArrayType) {
             assert ((ArrayType)it.rt.type).sz > 0;
             //A.size()
+            IRReg ptr = new IRReg(it.rt.val.type);
+            IRGEPInst inst = new IRGEPInst(ptr, ((IRPtrType)ptr.type).LoadType() ,it.rt.val);
+            inst.index.add(new IRIntConst(0,new IRIntType()));
+            curblock.push_back(inst);
+            it.val = LoadVal(ptr);
             return;
         }else if(it.rt.type.getType().equals("string")){
             IRCallInst inst = new IRCallInst("__str_"+it.name,null,null);
@@ -533,7 +592,7 @@ public class IRbuilder implements ASTVisitor {
                 inst.retType = ret.type;
                 inst.arg_list.add(it.list.list.get(0).val);
                 inst.arg_list.add(it.list.list.get(1).val);
-                it.type = new BaseType(2);
+//                it.type = new BaseType(2);
             }else {
                 IRReg ret = new IRReg(new IRIntType());
                 inst.rd = ret;
@@ -541,14 +600,14 @@ public class IRbuilder implements ASTVisitor {
                 if(it.name.equals("ord")) {
                     inst.arg_list.add(it.list.list.get(0).val);
                 }
-                it.type = new BaseType(0);
+//                it.type = new BaseType(0);
             }
             it.val = inst.rd;
             return;
         }
         ClassType now = all.getClass( it.rt.type.getType() );
         if(it.list == null){//Class A , A.x A*
-            IRClassType curC = (IRClassType) (((IRPtrType)it.rt.val.type).LoadTpye());
+            IRClassType curC = (IRClassType) (((IRPtrType)it.rt.val.type).LoadType());
             IRReg rd = new IRReg(new IRPtrType(curC.ir_Type.get(it.name),0));
             IRGEPInst inst = new IRGEPInst(rd,curC,it.rt.val);
             inst.index.add(new IRIntConst(0,new IRIntType()));
@@ -557,7 +616,7 @@ public class IRbuilder implements ASTVisitor {
 
             it.Ptr = rd;
             it.val = LoadVal(it.Ptr);
-            it.type = now.getMem(it.name,it.position);
+//            it.type = now.getMem(it.name,it.position);
         }else {
             IRType irType = TransType(now.get_func_ret(it.name));
             IRReg rd = new IRReg(irType);
@@ -568,7 +627,7 @@ public class IRbuilder implements ASTVisitor {
             curblock.push_back(inst);
 
             it.val = rd;
-            it.type = now.get_func_ret(it.name);
+//            it.type = now.get_func_ret(it.name);
         }
     }
 
@@ -588,7 +647,7 @@ public class IRbuilder implements ASTVisitor {
             it.Ptr = null;
             it.val = rd;
         }
-        it.type = it.son.type;
+//        it.type = it.son.type;
     }
 
     public void visit(varNode it){
@@ -598,11 +657,11 @@ public class IRbuilder implements ASTVisitor {
         }else {//element in class
             IRClassType curC = AST_IR_map.get(now.in_class_def.name);
             IRType irType = TransType(now.in_class_def.getMem(it.name,null));
-            IRReg rd = new IRReg( irType );
+            IRReg rd = new IRReg( new IRPtrType(irType,0) );
+            IRReg tmp = new IRReg(curClass);
+            curblock.push_back(new IRLoadInst(tmp,ThisReg,tmp.type));
+            IRGEPInst inst = new IRGEPInst(rd,((IRPtrType)tmp.type).LoadType(),tmp);
 
-            IRGEPInst inst = new IRGEPInst(rd,((IRPtrType)ThisReg.type).LoadTpye(),ThisReg);
-
-            inst.index.add(new IRIntConst(0,new IRIntType()));
             inst.index.add(new IRIntConst(0,new IRIntType()));
             inst.index.add(new IRIntConst( curC.pos.get(it.name) ,new IRIntType()));
 
@@ -611,7 +670,7 @@ public class IRbuilder implements ASTVisitor {
             it.Ptr = rd;
             it.val = LoadVal(it.Ptr);
         }
-        it.type = now.getType(it.name);
+//        it.type = now.getType(it.name);
     }
 
     public void visit(typeIDNode it){}

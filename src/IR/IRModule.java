@@ -36,12 +36,13 @@ public class IRModule {
         return init.block.get(0);
     }
 
-    public void addStringConst(IRStringConst v) {
+    public IRStringConst addStringConst(IRStringConst v) {
         var str = v.getString();
         if(!map.containsKey(str)) {
             map.put(str,v);
             Strings.add(v);
         }
+        return map.get(str);
     }
 
 }

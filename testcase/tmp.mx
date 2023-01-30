@@ -1,11 +1,5 @@
-class Node{
-    int x,y;
-};
-
 int main(){
-    Node tmp = new Node;
-    tmp.x = 1;
-    tmp.y = 2;
-    printlnInt(tmp.x + tmp.y);
+    bool a = true, b = false;
+    if( a || b )printlnInt(1);
     return 0;
 }

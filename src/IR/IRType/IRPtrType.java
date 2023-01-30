@@ -12,7 +12,7 @@ public class IRPtrType extends IRType{
         this.sz = sz;
     }
 
-    public IRType LoadTpye() {
+    public IRType LoadType() {
         if(sz == 0)return type;
         else return new IRPtrType(type,sz-1);
     }

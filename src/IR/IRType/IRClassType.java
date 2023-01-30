@@ -22,7 +22,7 @@ public class IRClassType extends IRType{
     }
 
     public void insert(String name, IRType t) {
-        pos.put(name,tt_sz);
+        pos.put(name,list.size());
         ir_Type.put(name,t);
         list.add(t);
         tt_sz += t.Size();

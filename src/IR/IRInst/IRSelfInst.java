@@ -36,6 +36,9 @@ public class IRSelfInst extends IRInst{
             return "    " + rd.toString_val() + " = " + "add i32 1, " + rs.toString_val();
         else if(op.equals("MinusMinus"))
             return "    " + rd.toString_val() + " = " + "add i32 -1, " + rs.toString_val();
-        else return "    " + rd.toString_val() + " = " + op + " " + rs.toString_type_val();
+        else if(op.equals("neg"))
+            return "    " + rd.toString_val() + " = " + "mul i32 -1, " + rs.toString_val();
+        else
+            return "    " + rd.toString_val() + " = " + op + " " + rs.toString_type_val();
     }
 }

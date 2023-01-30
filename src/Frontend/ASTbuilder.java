@@ -215,7 +215,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         var ret = new binaryExpr(l,r,l.type,new Position(ctx),4);
 
         if(ctx.OrOr()!=null)ret.opstr = "or";
-        if(ctx.AndAnd()!=null)ret.opstr = "xor";
+        if(ctx.AndAnd()!=null)ret.opstr = "and";
 
         return ret;
     }
