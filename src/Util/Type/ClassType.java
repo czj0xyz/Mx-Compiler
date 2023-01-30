@@ -42,6 +42,14 @@ public class ClassType extends BaseType{
         return funcMap.get(Name).ret;
     }
 
+    public BaseType get_func_ret(String Name) {
+        return funcMap.get(Name).ret;
+    }
+
+    public boolean hv_func(String name) {
+        return funcMap.containsKey(name);
+    }
+
     public ClassType(Position pos,String Name) {
         super(3);
         this.name=Name;

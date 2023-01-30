@@ -8,14 +8,20 @@ import IR.IRVisitor;
 public class IRBranchInst extends IRInst{
 
     public IRBasicValue condition;
-    public IRBlock Tblock,Fblock,destblock;
+    public IRBlock Tblock,Fblock;
 
-    IRBranchInst(IRBasicValue reg) {
+    public IRBranchInst(IRBasicValue reg) {
         super();
         this.condition = reg;
         this.Tblock = null;
         this.Fblock = null;
-        this.destblock = null;
+    }
+
+    public IRBranchInst(IRBasicValue reg,IRBlock T,IRBlock F) {
+        super();
+        this.condition = reg;
+        this.Tblock = T;
+        this.Fblock = F;
     }
 
     @Override
@@ -25,6 +31,6 @@ public class IRBranchInst extends IRInst{
 
     @Override
     public String toString() {
-        return "    "  + "";
+        return "    br "  + condition.toString_type_val() + ", label %" + Tblock.get_label() + ", label %" + Fblock.get_label();
     }
 }

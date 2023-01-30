@@ -13,7 +13,7 @@ public class IRReg extends IRBasicValue{
 
     @Override
     public String toString_val() {
-        return "%" + Integer.toString(id);
+        return "%_Reg" + Integer.toString(id);
     }
 
     @Override

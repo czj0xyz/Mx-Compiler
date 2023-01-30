@@ -40,11 +40,11 @@ public class Compiler
             System.out.println("Semantic Success!");
 
             //Codegen:
-            OutputStream out = new FileOutputStream("output.ll");
+            OutputStream ir_out = new FileOutputStream("output.ll");
 
             IRbuilder ir = new IRbuilder(Scp);
             var irModule =  ir.buildIR(ASTRoot);
-            out.write( (new IRPrinter()).Print(irModule).getBytes() );
+            ir_out.write( (new IRPrinter()).Print(irModule).getBytes() );
         /*
             ASMModule asm = new InstSelector(ir).getASM();
 

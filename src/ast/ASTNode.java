@@ -6,7 +6,7 @@ import Util.*;
 public abstract class ASTNode {
     public Position position;
     public IRBasicValue val;
-    public IRReg Ptr;
+    public IRBasicValue Ptr;
 
     public ASTNode(){
         this.val = null;

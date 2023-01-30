@@ -1,5 +1,6 @@
 package IR.IRInst;
 
+import IR.IRType.IRVoidType;
 import IR.IRValue.IRBasicValue;
 import IR.IRVisitor;
 
@@ -19,6 +20,8 @@ public class IRRetInst extends IRInst{
 
     @Override
     public String toString() {
-        return "    "  + "ret " + ret.toString_type_val();
+        if(ret.type instanceof IRVoidType)
+            return  "    "  + "ret void";
+        else return "    "  + "ret " + ret.toString_type_val();
     }
 }

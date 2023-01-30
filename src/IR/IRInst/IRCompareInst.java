@@ -34,6 +34,6 @@ public class IRCompareInst extends IRInst{
 
     @Override
     public String toString() {
-        return "    "  + "";
+        return "    "  + rd.toString_val() + " = icmp " + op + " " + rs1.toString_type_val() + ", " + rs2.toString_val();
     }
 }

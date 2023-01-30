@@ -22,4 +22,12 @@ public class InstSelector implements IRVisitor{
     public void visit(IRAllocaInst it){}
     @Override
     public void visit(IRCallInst it){}
+    @Override
+    public void visit(IRJumpInst it){}
+    @Override
+    public void visit(IRTruncInst it){}
+    @Override
+    public void visit(IRGEPInst it){}
+    @Override
+    public void visit(IRBitcastInst it){}
 }

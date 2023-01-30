@@ -112,7 +112,7 @@ public class SemanticChecker implements ASTVisitor {
 
             all.put_func(ad, ad.name);
         }
-        c.putFunc(new FuncType(it.position, it.name, c), it.name, it.position);
+        if(it.self!=null) c.putFunc(new FuncType(it.position, it.name, c), it.name, it.position);
 
 
         for (var v : it.var)

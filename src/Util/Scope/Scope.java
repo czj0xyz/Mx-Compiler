@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import IR.IRType.IRType;
+import IR.IRValue.IRBasicValue;
 import IR.IRValue.IRReg;
 import Util.Position;
 import Util.Type.*;
@@ -74,15 +75,20 @@ public class Scope {
         return new BaseType();
     }
 
-    public HashMap<String, IRReg> IRAddr = new HashMap<>();
+    public HashMap<String, IRBasicValue> IRAddr = new HashMap<>();
 
-    public void put_def_ir(IRReg type, String name) {
+    public void put_def_ir(IRBasicValue type, String name) {
         IRAddr.put(name,type);
     }
 
-    public IRReg get_Addr(String name) {
+    public IRBasicValue get_Addr(String name) {
         if(IRAddr.containsKey(name))return IRAddr.get(name);
         return par.get_Addr(name);
+    }
+
+    public boolean hv_ir(String name ) {
+        if(IRAddr.containsKey(name)) return true;
+        return par==null ? false : par.hv_ir(name);
     }
 
 }

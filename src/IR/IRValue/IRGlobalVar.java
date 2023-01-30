@@ -3,7 +3,7 @@ package IR.IRValue;
 import IR.IRType.IRType;
 
 public class IRGlobalVar extends IRBasicValue{
-    public IRBasicValue val;
+    public IRBasicValue init_val;
 
     public String name;
 

@@ -234,7 +234,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
             if(ctx.value().THIS()!=null)ret.isThis=true;
             else if(ctx.value().NULL()!=null)ret.isNull=true;
             else if(ctx.value().INT()!=null){ret.num = Integer.parseInt( ctx.value().INT().toString() );ret.wh = 1;}
-            else if(ctx.value().STRING()!=null){ret.str = ctx.value().INT().toString();ret.wh = 2;}
+            else if(ctx.value().STRING()!=null){ret.str = ctx.value().STRING().toString();ret.wh = 2;}
             else if(ctx.value().TRUE()!=null){ret.flg = true;ret.wh = 3;}
             else {ret.flg = false;ret.wh = 4;}
 

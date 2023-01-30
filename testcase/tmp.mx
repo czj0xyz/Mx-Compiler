@@ -1,5 +1,11 @@
+class Node{
+    int x,y;
+};
+
 int main(){
-    int a = 1,b = 2;
-    //printlnInt(a+b*2);
-    return a+b*2;
+    Node tmp = new Node;
+    tmp.x = 1;
+    tmp.y = 2;
+    printlnInt(tmp.x + tmp.y);
+    return 0;
 }

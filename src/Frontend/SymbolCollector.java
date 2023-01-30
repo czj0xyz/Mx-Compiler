@@ -51,7 +51,7 @@ public class SymbolCollector  implements ASTVisitor {
             for(var v: f.list.type)ad.push(v);
             c.putFunc(ad,ad.name,f.position);
         }
-        c.putFunc(new FuncType(it.position, it.name, c),it.name,it.position);
+        if(it.self!=null) c.putFunc(new FuncType(it.position, it.name, c),it.name,it.position);
 
         for(var v:it.var)
             for(var u:v.assi){

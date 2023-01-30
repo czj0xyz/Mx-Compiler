@@ -1,5 +1,6 @@
 package IR;
 
+import IR.IRInst.IRRetInst;
 import IR.IRType.IRType;
 import IR.IRValue.IRBasicValue;
 import IR.IRValue.IRReg;
@@ -15,6 +16,8 @@ public class IRFunc {
     public ArrayList<IRReg> arg_list = new ArrayList<>();
 
     public IRType RetType;
+    public IRReg retVal;
+    public IRBlock RetBlock;
 
     public IRFunc(String name,IRType RetType) {
         this.name = name;
@@ -38,7 +41,7 @@ public class IRFunc {
         ret += "){\n";
 
         for(var v:block) ret += v;
-
+        ret += RetBlock;
         ret += "}";
         return ret;
     }
