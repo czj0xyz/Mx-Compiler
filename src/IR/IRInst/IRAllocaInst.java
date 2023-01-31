@@ -20,7 +20,7 @@ public class IRAllocaInst extends IRInst{
     @Override
     public String toString() {
         assert reg.type instanceof IRPtrType;
-        return "    "  + reg.toString_val() + " = alloca " + ((IRPtrType)reg.type).LoadTpye();
+        return "    "  + reg.toString_val() + " = alloca " + ((IRPtrType)reg.type).LoadType();
     }
 
 }

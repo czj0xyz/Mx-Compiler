@@ -49,6 +49,7 @@ public class IRPrinter {
         ret += "declare void @println(i8*)\n";
         ret += "declare void @printInt(i32)\n";
         ret += "declare void @printlnInt(i32)\n";
+        ret += "declare void @printlnIntPoint(i32*)\n";
         ret += "declare i8* @getString()\n";
         ret += "declare i32 @getInt()\n";
         ret += "declare i8* @toString(i32)\n";

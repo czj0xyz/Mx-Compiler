@@ -14,13 +14,13 @@ public class IRStringConst extends IRConst {
 
     public String getString() {
         String res = "";
-        for(int i=0;i<val.length();i++){
-            if(val.charAt(i) == '\\') {
+        for(int i=0;i<val.length();i++) {
+            if (val.charAt(i) == '\\') {
                 i++;
-                if(val.charAt(i) == '\\') res += '\\';
-                else if(val.charAt(i) == '\n') res += '\n';
+                if (val.charAt(i) == '\\') res += '\\';
+                else if (val.charAt(i) == 'n') res += '\n';
                 else res += '\"';
-            }else res += val.charAt(i);
+            } else res += val.charAt(i);
         }
         return res;
     }
@@ -50,6 +50,6 @@ public class IRStringConst extends IRConst {
     }
 
     public String toString_global() {
-        return  "[" + Integer.toString(val.length()+1) + " x i8] c\"" + String_llvm() + "\"";
+        return  "[" + Integer.toString(getString().length()+1) + " x i8] c\"" + String_llvm() + "\"";
     }
 }

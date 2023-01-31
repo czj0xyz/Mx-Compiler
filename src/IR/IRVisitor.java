@@ -17,4 +17,5 @@ public interface IRVisitor {
     void visit(IRTruncInst it);
     void visit(IRGEPInst it);
     void visit(IRBitcastInst it);
+    void visit(IRZextInst it);
 }

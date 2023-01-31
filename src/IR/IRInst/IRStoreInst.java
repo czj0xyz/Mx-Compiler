@@ -1,5 +1,6 @@
 package IR.IRInst;
 
+import IR.IRType.IRPtrType;
 import IR.IRType.IRType;
 import IR.IRValue.IRBasicValue;
 import IR.IRValue.IRReg;
@@ -24,6 +25,6 @@ public class IRStoreInst extends IRInst{
 
     @Override
     public String toString() {
-        return "    "  + "store " + val.toString_type_val() + ", " + addr.toString_type_val();
+        return "    "  + "store " + ((IRPtrType)addr.type).LoadType() +  " " + val.toString_val() + ", " + addr.toString_type_val();
     }
 }
