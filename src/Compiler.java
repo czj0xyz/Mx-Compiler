@@ -24,9 +24,9 @@ public class Compiler
 {
     public static void main(String[] args) throws Exception{
         try {
-//            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
-//                    "Mx-Compiler\\testcase\\codegen\\t10.mx"));
-            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
+            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
+                    "Mx-Compiler\\testcase\\codegen\\t10.mx"));
+            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
             MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
@@ -42,13 +42,13 @@ public class Compiler
 //            System.out.println("Semantic Success!");
 
             //Codegen:
-            OutputStream ir_out = new FileOutputStream("output.ll");
+//            OutputStream ir_out = new FileOutputStream("output.ll");
 
             IRbuilder ir = new IRbuilder(Scp);
             var irModule =  ir.buildIR(ASTRoot);
 //            ir_out.write( (new IRPrinter()).Print(irModule).getBytes() );
 
-            ir_out.close();
+//            ir_out.close();
 
 //            OutputStream asm_out = new FileOutputStream("./fortest/ravel/build/test.s");
             OutputStream asm_out_oj = new FileOutputStream("output.s");
