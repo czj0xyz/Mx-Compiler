@@ -213,10 +213,8 @@ public class IRbuilder implements ASTVisitor {
         if(it.check != null) {
             curblock = ForCheck;
             it.check.accept(this);
-            assert !ForCheck.hv_ret;
-            curblock = ForCheck;
-            ForCheck.terminalInst = get_branch(it.check.val,ForBlock,ForDest);
-            ForCheck.hv_ret = true;
+            curblock.terminalInst = get_branch(it.check.val,ForBlock,ForDest);
+            curblock.hv_ret = true;
         } else {
             ForCheck.terminalInst = new IRJumpInst(ForBlock);
             ForCheck.hv_ret = true;
@@ -235,8 +233,8 @@ public class IRbuilder implements ASTVisitor {
         now.loop_cnt --;
 
         curblock = ForStep;
-        if(it.stp != null) it.stp.accept(this);
         ForStep.terminalInst = new IRJumpInst(ForCheck);
+        if(it.stp != null) it.stp.accept(this);
 
         ForDest.terminalInst = lastblock.terminalInst;
         lastblock.terminalInst = new IRJumpInst(ForCheck);
@@ -378,8 +376,7 @@ public class IRbuilder implements ASTVisitor {
 
         curblock = WhileCheck;
         it.check.accept(this);
-        curblock = WhileCheck;
-        WhileCheck.terminalInst = get_branch(it.check.val,WhileBlock,WhileDest);
+        curblock.terminalInst = get_branch(it.check.val,WhileBlock,WhileDest);
 
         now.loop_cnt++;
         IRLoopBreak.push(WhileDest);
@@ -462,8 +459,6 @@ public class IRbuilder implements ASTVisitor {
             FailBlock.terminalInst = new IRJumpInst(DestBlock);
             it.rexp.accept(this);
             curblock.push_back(new IRStoreInst(it.rexp.val,rd,it.rexp.val.type) );
-//            assert !FailBlock.hv_ret;
-//            FailBlock.hv_ret = true;
 
             IRReg ret = new IRReg(new IRBoolType());
             DestBlock.push_back(new IRLoadInst(ret,rd,new IRBoolType()));

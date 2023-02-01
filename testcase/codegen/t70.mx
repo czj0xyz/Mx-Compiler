@@ -44,14 +44,14 @@ void qsort(Edge[] e, int l, int r)
 		while (i < j)
 		{
 			while(i < j && e[j].w >= x.w) {
-				j--; 
+				j--;
             }
 			if (i < j) {
 				e[i] = e[j];
                 i++;
             }
-			while(i < j && e[i].w < x.w) { 
-				i++; 
+			while(i < j && e[i].w < x.w) {
+				i++;
             }
 			if (i < j) {
 				e[j] = e[i];
