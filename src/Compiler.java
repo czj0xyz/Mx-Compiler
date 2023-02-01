@@ -61,7 +61,7 @@ public class Compiler
 //            asm_out.write( asmModule.toString().getBytes() );
 //            asm_out.close();
             asm_out_oj.write( asmModule.toString().getBytes() );
-            new BuiltinFunctionASMPrinter(asm_out_oj);
+            new BuiltinFunctionASMPrinter("builtin.s");
             asm_out_oj.close();
         } catch (error er) {
             System.err.println(er.toString());

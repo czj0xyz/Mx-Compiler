@@ -462,7 +462,9 @@ __str_ne:
         .size	__str_ne, .-__str_ne
         .ident	"GCC: (GNU) 10.1.0"\n\n
 """;
-    public BuiltinFunctionASMPrinter(OutputStream out) throws IOException {
+    public BuiltinFunctionASMPrinter(String fileName) throws IOException {
+        FileOutputStream out = new FileOutputStream(fileName);
         out.write(builtin_s_as_literal.getBytes());
+        out.close();
     }
 }
