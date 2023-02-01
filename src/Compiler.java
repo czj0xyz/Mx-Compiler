@@ -24,7 +24,8 @@ public class Compiler
 {
     public static void main(String[] args) throws Exception{
         try {
-
+//            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
+//                    "Mx-Compiler\\testcase\\codegen\\t10.mx"));
             MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
@@ -38,7 +39,7 @@ public class Compiler
             GlobalScope Scp = new GlobalScope(null);
             new SymbolCollector(Scp).visit(ASTRoot);
             new SemanticChecker(Scp).visit(ASTRoot);
-            System.out.println("Semantic Success!");
+//            System.out.println("Semantic Success!");
 
             //Codegen:
             OutputStream ir_out = new FileOutputStream("output.ll");
@@ -57,10 +58,10 @@ public class Compiler
             new InstSelector(asmModule,irModule);
             new RegAlloc(asmModule);
 
-            new BuiltinFunctionASMPrinter(asm_out_oj);
 //            asm_out.write( asmModule.toString().getBytes() );
-            asm_out_oj.write( asmModule.toString().getBytes() );
 //            asm_out.close();
+            asm_out_oj.write( asmModule.toString().getBytes() );
+            new BuiltinFunctionASMPrinter(asm_out_oj);
             asm_out_oj.close();
         } catch (error er) {
             System.err.println(er.toString());

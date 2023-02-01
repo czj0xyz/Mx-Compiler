@@ -25,15 +25,18 @@ public class IRModule {
 
     public IRFunc MainFn,init;
 
+    public IRBlock GlobalBlock;
+
     public IRModule() {
         init = new IRFunc("__init_for_global_variables" , new IRVoidType() );
         init.RetBlock = new IRBlock("return");
         init.RetBlock.push_back(new IRRetInst(new IRConst(new IRVoidType())));
         init.block.add( new IRBlock("entry",new IRJumpInst(init.RetBlock) ));
+        GlobalBlock = init.block.get(0);
     }
 
     public IRBlock qblock() {
-        return init.block.get(0);
+        return GlobalBlock;
     }
 
     public IRStringConst addStringConst(IRStringConst v) {

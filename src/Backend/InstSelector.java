@@ -20,6 +20,8 @@ public class InstSelector implements IRVisitor{
     private ASMFunc curFunc = null;
     public ASMModule asmModule = null;
 
+    public IRModule irModule;
+
     private PhyReg sp = new PhyReg("sp");
     private PhyReg ra = new PhyReg("ra");
     private PhyReg t0 = new PhyReg("t0");
@@ -42,7 +44,7 @@ public class InstSelector implements IRVisitor{
             String v = ((IRStringConst)val).getString();
             ASMString t = asmModule.get_str(v);
             VirReg ret = new VirReg(curFunc.allocReg++);
-            curblock.push_back(new ASMLaInst( ".LC" + t.id,ret));
+            curblock.push_back(new ASMLaInst( ".LC_Mxstr" + t.id,ret));
             return ret;
         }else {
             int value = 0;
@@ -56,6 +58,7 @@ public class InstSelector implements IRVisitor{
 
     public InstSelector(ASMModule st,IRModule irModule) {
         this.asmModule = st;
+        this.irModule = irModule;
         visit(irModule);
     }
 

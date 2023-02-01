@@ -555,10 +555,20 @@ public class IRbuilder implements ASTVisitor {
         IRBlock ForCheck = new IRBlock("new_array_for_check"), ForStep = new IRBlock("new_array_for_step");
         IRBlock ForDest = new IRBlock("new_array_for_dest"), ForBlock = new IRBlock("new_array_for_block");
         IRBlock lastblock = curblock;
-        curFunc.push_back(ForCheck);
-        curFunc.push_back(ForStep);
-        curFunc.push_back(ForDest);
-        curFunc.push_back(ForBlock);
+        if(!now.in_class && !now.in_func) {
+            irModule.init.push_back(ForCheck);
+            irModule.init.push_back(ForStep);
+            irModule.init.push_back(ForDest);
+            irModule.init.push_back(ForBlock);
+            irModule.GlobalBlock = ForDest;
+
+        }else {
+            curFunc.push_back(ForCheck);
+            curFunc.push_back(ForStep);
+            curFunc.push_back(ForDest);
+            curFunc.push_back(ForBlock);
+
+        }
 
         curblock = ForCheck;
         IRReg reg_cmp = new IRReg(new IRBitType());

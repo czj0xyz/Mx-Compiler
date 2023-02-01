@@ -13,7 +13,7 @@ public class ASMString extends ASMOperand {
 
     @Override
     public String toString() {
-        String ret = ".LC" + id + ":\n";
+        String ret = ".LC_Mxstr" + id + ":\n";
         String res = "";
         for(int i=0;i<val.length();i++)
             if(val.charAt(i) == '\n') res += "\\n";

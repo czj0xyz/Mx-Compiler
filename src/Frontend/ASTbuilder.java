@@ -108,7 +108,7 @@ public class ASTbuilder extends MxCompilerBaseVisitor<ASTNode>{
         if(ctx.MinusMinus() != null) ret.opstr = "MinusMinus";
         if(ctx.Plus() != null) ret.opstr = "Plus";
         if(ctx.Minus() != null) ret.opstr = "neg";
-        if(ctx.Tilde() != null) ret.opstr = "not";
+        if(ctx.Tilde() != null || ctx.Not() != null) ret.opstr = "not";
 
         return ret;
     }
