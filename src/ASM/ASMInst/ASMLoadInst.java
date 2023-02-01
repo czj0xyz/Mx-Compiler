@@ -5,16 +5,24 @@ import ASM.Operand.ASMReg;
 
 public class ASMLoadInst extends ASMInst{
     public int bit;
-    public ASMReg rd,rs;
-    public ASMImm imm;
 
-    //rd = imm(rs)
-    public ASMLoadInst(int bit,ASMReg rd,ASMReg rs,ASMImm imm) {
+    //rd = imm(rs1)
+    public ASMLoadInst(int bit,ASMReg rd,ASMReg rs1,ASMImm imm) {
         super();
         this.bit = bit;
         this.rd = rd;
-        this.rs = rs;
+        this.rs1 = rs1;
         this.imm = imm;
+    }
+
+    @Override
+    public String toString() {
+        String st = "l";
+        if(bit ==  1) st += "b";
+        else if(bit == 2)st += "h";
+        else if(bit == 4)st += "w";
+        else st += "d";
+        return "    " + st + " " + rd + ", " + imm + "(" + rs1 + ")";
     }
 
 }

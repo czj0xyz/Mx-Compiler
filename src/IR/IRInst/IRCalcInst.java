@@ -9,10 +9,10 @@ import IR.IRVisitor;
     add +
     sub -
     mul *
-    div{u} /
-    rem{u} %
-    sll <<
-    srl >>
+    div{u} / sdiv
+    rem{u} % srem
+    sll << shl
+    srl >> ashr
     or  |
     xor ^
     and &

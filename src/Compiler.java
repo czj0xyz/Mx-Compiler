@@ -3,8 +3,11 @@
 import java.io.*;
 import java.util.Scanner;
 
+import ASM.ASMModule;
 import Backend.IRPrinter;
 import Backend.IRbuilder;
+import Backend.InstSelector;
+import Backend.RegAlloc;
 import Util.Scope.GlobalScope;
 import ast.ProgramNode;
 import grammar.*;
@@ -22,9 +25,7 @@ public class Compiler
     public static void main(String[] args) throws Exception{
         try {
 
-            InputStream input = new FileInputStream(new File("E:\\sjtu\\编译器\\Rt\\" +
-                                           "Mx-Compiler\\testcase\\tmp.mx"));
-            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
+            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
             MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
@@ -44,17 +45,23 @@ public class Compiler
 
             IRbuilder ir = new IRbuilder(Scp);
             var irModule =  ir.buildIR(ASTRoot);
-            ir_out.write( (new IRPrinter()).Print(irModule).getBytes() );
-        /*
-            ASMModule asm = new InstSelector(ir).getASM();
+//            ir_out.write( (new IRPrinter()).Print(irModule).getBytes() );
 
-            new RegAlloc(asm).regAlloc();
+            ir_out.close();
 
-            new BuiltinFunctionASMPrinter("output.s");
+//            OutputStream asm_out = new FileOutputStream("./fortest/ravel/build/test.s");
+            OutputStream asm_out_oj = new FileOutputStream("output.s");
 
-            new ASMPrinter(asm,out).Print();
-         */
+            ASMModule asmModule = new ASMModule();
 
+            new InstSelector(asmModule,irModule);
+            new RegAlloc(asmModule);
+
+            new BuiltinFunctionASMPrinter(asm_out_oj);
+//            asm_out.write( asmModule.toString().getBytes() );
+            asm_out_oj.write( asmModule.toString().getBytes() );
+//            asm_out.close();
+            asm_out_oj.close();
         } catch (error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

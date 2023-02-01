@@ -18,7 +18,7 @@ public class IRPtrType extends IRType{
     }
 
     @Override public int Size() {
-        return 8;
+        return 4;
     }
 
     @Override

@@ -9,4 +9,8 @@ public class ASMCallInst extends ASMInst {
         this.label = label;
     }
 
+    @Override
+    public String toString() {
+        return "    call " + label;
+    }
 }

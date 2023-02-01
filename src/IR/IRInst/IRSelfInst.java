@@ -16,7 +16,7 @@ public class IRSelfInst extends IRInst{
     public IRBasicValue rs;
     public IRReg rd;
 
-    String op;
+    public String op;
 
     public IRSelfInst(IRBasicValue rs,IRReg rd,String op) {
         super();

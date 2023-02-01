@@ -2,6 +2,7 @@ package utility;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class BuiltinFunctionASMPrinter {
     String builtin_s_as_literal ="""
@@ -461,8 +462,7 @@ __str_ne:
         .size	__str_ne, .-__str_ne
         .ident	"GCC: (GNU) 10.1.0"
 """;
-    public BuiltinFunctionASMPrinter(String dst) throws IOException {
-        FileOutputStream out = new FileOutputStream(dst);
+    public BuiltinFunctionASMPrinter(OutputStream out) throws IOException {
         out.write(builtin_s_as_literal.getBytes());
     }
 }

@@ -12,15 +12,17 @@ public class ASMBlock {
         this.label = label;
     }
 
-    public String toString() {
-        return "";
-    }
-
     public void push_back(ASMInst inst){
         list.addLast(inst);
     }
 
     public void push_front(ASMInst inst){
         list.addFirst(inst);
+    }
+
+    public String toString() {
+        String ret = label + ":\n";
+        for(var v:list)ret += v + "\n";
+        return ret;
     }
 }

@@ -8,4 +8,9 @@ public class ASMJumpInst extends ASMInst{
         this.label = label;
     }
 
+    //j
+    @Override
+    public String toString() {
+        return "    j " + label;
+    }
 }

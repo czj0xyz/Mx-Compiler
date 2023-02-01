@@ -4,9 +4,7 @@ import ASM.Operand.ASMImm;
 import ASM.Operand.ASMReg;
 
 public class ASMCalciInst extends ASMInst{
-    public ASMReg rs1,rd;// rd = rs1 op imm
     public String op;
-    public ASMImm imm;
 
     public ASMCalciInst(ASMReg rs1,ASMImm imm,ASMReg rd,String op) {
         super();
@@ -15,4 +13,11 @@ public class ASMCalciInst extends ASMInst{
         this.rd = rd;
         this.op = op;
     }
+
+    @Override
+    public String toString() {
+        if(imm == null)return "    " + op + " " + rd + ", " + rs1;
+        else return "    " + op + " " + rd + ", " + rs1 + ", " + imm;
+    }
+
 }

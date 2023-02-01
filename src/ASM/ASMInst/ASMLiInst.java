@@ -4,8 +4,6 @@ import ASM.Operand.ASMImm;
 import ASM.Operand.ASMReg;
 
 public class ASMLiInst extends ASMInst{
-    public ASMReg rd;
-    public ASMImm imm;
     //rd = imm
 
     public ASMLiInst(ASMReg rd,ASMImm imm) {
@@ -13,4 +11,8 @@ public class ASMLiInst extends ASMInst{
         this.imm = imm;
     }
 
+    @Override
+    public String toString() {
+        return "    li " + rd + ", " + imm;
+    }
 }

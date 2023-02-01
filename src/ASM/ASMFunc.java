@@ -31,12 +31,22 @@ public class ASMFunc {
         list.add(b);
     }
 
-    public String toString() {
-        return "";
-    }
-
     public VirReg get_VirReg(IRReg reg) {
         if(!pos.containsKey(reg.id)) pos.put(reg.id,new VirReg(allocReg++));
         return pos.get(reg.id);
+    }
+
+    public int Stack_Size() {
+        return (allocReg + arg_listReg) << 2;
+    }
+
+
+    public String toString() {
+        String ret = "    .globl " + name + "\n";
+        ret += name + ":\n";
+        for(var v:list) ret += v;
+        ret += RetBlock;
+//        ret += "\n";
+        return ret;
     }
 }
