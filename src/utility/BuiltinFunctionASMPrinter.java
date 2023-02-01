@@ -460,11 +460,15 @@ __str_ne:
         addi	sp,sp,32
         jr	ra
         .size	__str_ne, .-__str_ne
-        .ident	"GCC: (GNU) 10.1.0"\n\n
+        .ident	"GCC: (GNU) 10.1.0"
 """;
     public BuiltinFunctionASMPrinter(String fileName) throws IOException {
         FileOutputStream out = new FileOutputStream(fileName);
         out.write(builtin_s_as_literal.getBytes());
         out.close();
+    }
+
+    public BuiltinFunctionASMPrinter(FileOutputStream  out) throws IOException {
+        out.write(builtin_s_as_literal.getBytes());
     }
 }

@@ -23,12 +23,12 @@ public class ASMModule {
     public String toString() {
         String ret = "";
 
-        ret += "    .section .data\n";
+        if(GlobalVar.size()>0)ret += "    .section .data\n";
         for(var v:GlobalVar)
             ret += v + "\n";
         ret += "\n";
 
-        ret += "    .section .rodata\n";
+        if(Strings.size()>0)ret += "    .section .rodata\n";
         for(var v: Strings)
             ret += v + "\n";
         ret += "\n";

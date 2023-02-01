@@ -21,6 +21,7 @@ public class ASMBlock {
     }
 
     public String toString() {
+        assert label != null;
         String ret = label + ":\n";
         for(var v:list)ret += v + "\n";
         return ret;

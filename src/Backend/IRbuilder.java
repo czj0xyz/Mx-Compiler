@@ -56,13 +56,16 @@ public class IRbuilder implements ASTVisitor {
             return new IRPtrType( TransType(( (ArrayType)type ).type) ,( (ArrayType)type ).sz - 1);
         } else if(type instanceof ClassType) {
             ClassType T = (ClassType) type;
+            T = all.getClass(T.name);
             if(!AST_IR_map.containsKey(T.name)){
                 IRClassType bs = new IRClassType(T.name);
+                AST_IR_map.put(T.name,bs);
                 for (int i = 0; i < T.vars.size(); i++) {
                     bs.insert(T.vars_name.get(i), TransType(T.vars.get(i)));
                 }
+//                System.out.println(T.name);
+//                System.out.println(T.vars.size());
                 bs.builtin = (all.getClass(T.name)).hv_func(T.name);
-                AST_IR_map.put(T.name,bs);
             }
             return new IRPtrType( AST_IR_map.get(T.name) ,0 );
         }else {
@@ -768,6 +771,8 @@ public class IRbuilder implements ASTVisitor {
             IRType irType = TransType(now.in_class_def.getMem(it.name,null));
             IRReg rd = new IRReg( new IRPtrType(irType,0) );
             IRReg tmp = new IRReg(curClass);
+//            System.out.println(curC.pos.containsKey("dist"));
+//            System.out.println(now.in_class_def.vars_name.size());
             curblock.push_back(new IRLoadInst(tmp,ThisReg,tmp.type));
             IRGEPInst inst = new IRGEPInst(rd,((IRPtrType)tmp.type).LoadType(),tmp);
 

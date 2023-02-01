@@ -183,7 +183,7 @@ public class InstSelector implements IRVisitor{
     }
     @Override
     public void visit(IRStoreInst it){
-        curblock.push_back(new ASMStoreInst(it.val.type.Size(),TransValue(it.addr),TransValue(it.val),new ASMImm(0)));
+        curblock.push_back(new ASMStoreInst(((IRPtrType)it.addr.type).LoadType().Size(),TransValue(it.addr),TransValue(it.val),new ASMImm(0)));
     }
     @Override
     public void visit(IRAllocaInst it){
