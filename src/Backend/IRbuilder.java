@@ -438,13 +438,13 @@ public class IRbuilder implements ASTVisitor {
     }
 
     public void visit(binaryExpr it){
-        if(it.lexp.type.getType().equals("Bool") && (it.opstr.equals("or") || it.opstr.equals("and"))) {
+        if(it.lexp.type.getType().equals("bool") && (it.opstr.equals("or") || it.opstr.equals("and"))) {
             IRBlock FailBlock = new IRBlock("binary_fail"), DestBlock = new IRBlock("binary_dest");
             curFunc.push_back(FailBlock);
             curFunc.push_back(DestBlock);
 
-            IRBlock lastBlock = curblock;
             it.lexp.accept(this);
+            IRBlock lastBlock = curblock;
             IRReg rd = new IRReg(new IRPtrType(new IRBoolType(),0));
             curblock.push_back(new IRAllocaInst(rd));
             curblock.push_back(new IRStoreInst(it.lexp.val,rd,it.lexp.val.type) );
@@ -459,11 +459,11 @@ public class IRbuilder implements ASTVisitor {
             lastBlock.hv_ret = true;
 
             curblock = FailBlock;
+            FailBlock.terminalInst = new IRJumpInst(DestBlock);
             it.rexp.accept(this);
             curblock.push_back(new IRStoreInst(it.rexp.val,rd,it.rexp.val.type) );
-            assert !FailBlock.hv_ret;
-            FailBlock.hv_ret = true;
-            FailBlock.terminalInst = new IRJumpInst(DestBlock);
+//            assert !FailBlock.hv_ret;
+//            FailBlock.hv_ret = true;
 
             IRReg ret = new IRReg(new IRBoolType());
             DestBlock.push_back(new IRLoadInst(ret,rd,new IRBoolType()));

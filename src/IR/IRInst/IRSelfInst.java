@@ -1,5 +1,7 @@
 package IR.IRInst;
 
+import IR.IRBlock;
+import IR.IRType.IRBoolType;
 import IR.IRValue.IRBasicValue;
 import IR.IRValue.IRReg;
 import IR.IRVisitor;
@@ -38,6 +40,8 @@ public class IRSelfInst extends IRInst{
             return "    " + rd.toString_val() + " = " + "add i32 -1, " + rs.toString_val();
         else if(op.equals("neg"))
             return "    " + rd.toString_val() + " = " + "mul i32 -1, " + rs.toString_val();
+        else if(op.equals("not"))
+            return "    " + rd.toString_val() + " = " + "xor i32 " + (rs.type instanceof IRBoolType?"1":"-1") + ", " + rs.toString_val();
         else
             return "    " + rd.toString_val() + " = " + op + " " + rs.toString_type_val();
     }

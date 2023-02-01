@@ -135,7 +135,9 @@ public class InstSelector implements IRVisitor{
         }else if(it.op.equals("MinusMinus")) {
             curblock.push_back(new ASMCalciInst(rs1,new ASMImm(-1),rd,"addi"));
         }else {
-            curblock.push_back(new ASMCalciInst(rs1,null,rd,it.op));
+            if(!(it.rd.type instanceof IRBoolType))
+                curblock.push_back(new ASMCalciInst(rs1,null,rd,it.op));
+            else curblock.push_back(new ASMCalciInst(rs1,new ASMImm(1),rd,"xori"));
         }
     }
     @Override
