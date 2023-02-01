@@ -24,9 +24,9 @@ public class Compiler
 {
     public static void main(String[] args) throws Exception{
         try {
-            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
-                    "Mx-Compiler\\testcase\\codegen\\t10.mx"));
-            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(input));
+//            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
+//                    "Mx-Compiler\\testcase\\codegen\\t10.mx"));
+            MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
             MxCompilerParser parser = new MxCompilerParser(new CommonTokenStream(lexer));
