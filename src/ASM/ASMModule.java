@@ -33,7 +33,6 @@ public class ASMModule {
             ret += v + "\n";
         ret += "\n";
 
-        ret += "    .section .text\n";
         for(var v:func_list) ret += v + "\n";
         return ret;
     }

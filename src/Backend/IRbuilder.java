@@ -155,7 +155,7 @@ public class IRbuilder implements ASTVisitor {
 
         all = new GlobalScope(all);
         for (var f : it.func) {
-            var ad = new FuncType(f.position, f.name, f.ret);
+            var ad = new FuncType(f.position,it.name + "." + f.name, f.ret);
             for (var v : f.list.type) ad.push(v);
 
             all.put_func(ad, ad.name);
@@ -662,16 +662,30 @@ public class IRbuilder implements ASTVisitor {
     }
 
     public void visit(funcExpr it){
-        var retType = TransType( (all.getFunc(it.name)).ret );
+        String name = "";
+        boolean flg = false;
+        if(now.in_class && all.containsfunc( now.in_class_def.name+ "." + it.name)) {
+            name = now.in_class_def.name + "." + it.name;
+            flg = true;
+        }else if(!all.containsfunc( it.name) ){
+            name = now.in_class_def.name+ "." + it.name;
+            flg  =true;
+        }else name = it.name;
+        var retType = TransType( (all.getFunc(name)).ret );
         var rd = new IRReg(retType);
-        IRCallInst call = new IRCallInst(it.name,retType,rd);
+        IRCallInst call = new IRCallInst(name,retType,rd);
         it.list.accept(this);
 
+        if(flg) {
+            IRReg tmp =new IRReg(((IRPtrType)ThisReg.type).LoadType());
+            curblock.push_back(new IRLoadInst(tmp,ThisReg,tmp.type));
+            call.arg_list.add(tmp);
+        }
         for(var v:it.list.list)call.arg_list.add(v.val);
 
         it.val = rd;
         curblock.push_back( call );
-//        it.type = all.getFunc(it.name).ret;
+//        it.type = all.getFunc(name).ret;
     }
 
     public void visit(memberExpr it){

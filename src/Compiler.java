@@ -25,7 +25,7 @@ public class Compiler
     public static void main(String[] args) throws Exception{
         try {
 //            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
-//                    "Mx-Compiler\\testcase\\codegen\\t18.mx"));
+////                    "Mx-Compiler\\testcase\\codegen\\shortest_path\\floyd.mx"));
             MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
@@ -61,8 +61,8 @@ public class Compiler
 //            asm_out.write( asmModule.toString().getBytes() );
 //            asm_out.close();
             asm_out_oj.write( asmModule.toString().getBytes() );
-            new BuiltinFunctionASMPrinter("builtin.s");
             asm_out_oj.close();
+            new BuiltinFunctionASMPrinter("builtin.s");
         } catch (error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

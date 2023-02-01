@@ -42,7 +42,7 @@ public class ASMFunc {
 
 
     public String toString() {
-        String ret = "    .globl " + name + "\n";
+        String ret = "    .text\n" + "    .globl " + name + "\n";
         ret += name + ":\n";
         for(var v:list) ret += v;
         ret += RetBlock;
