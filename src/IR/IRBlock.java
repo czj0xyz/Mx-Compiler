@@ -7,7 +7,7 @@ import IR.IRInst.*;
 
 
 public class IRBlock {
-    String label;
+    public String label;
     public LinkedList<IRInst> list = new LinkedList<>();
     public IRInst terminalInst = null;
     public int id;
@@ -32,12 +32,29 @@ public class IRBlock {
     }
 
     public void push_back(IRInst v) {
-        if(!hv_ret)list.add(v);
+        if(!hv_ret)list.addLast(v);
+    }
+
+    public void push_front(IRInst v) {
+        list.addFirst(v);
     }
 
     public String toString() {
 
         String ret = get_label() + ": \n";
+
+        for(var v:list) ret += v + "\n";
+
+        if(terminalInst != null)ret += terminalInst + "\n";
+
+        return ret;
+    }
+
+    public String toString(ArrayList<IRAllocaInst> insts) {
+
+        String ret = get_label() + ": \n";
+
+        for(var v:insts) ret += v + "\n";
 
         for(var v:list) ret += v + "\n";
 

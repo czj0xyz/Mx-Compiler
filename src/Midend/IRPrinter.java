@@ -1,4 +1,4 @@
-package Backend;
+package Midend;
 
 import IR.IRModule;
 import IR.IRType.IRPtrType;

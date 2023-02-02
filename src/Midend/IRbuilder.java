@@ -1,4 +1,4 @@
-package Backend;
+package Midend;
 
 import IR.IRBlock;
 import IR.IRFunc;
@@ -118,7 +118,8 @@ public class IRbuilder implements ASTVisitor {
         }else if(now.in_class && !now.in_func) {//class var
         }else {
             IRReg PtrReg = new IRReg(new IRPtrType(TransType(now.getType(it.name)),0));
-            curblock.push_back(new IRAllocaInst(PtrReg) );
+//            curblock.push_back(new IRAllocaInst(PtrReg) );
+            curFunc.push_inst(new IRAllocaInst(PtrReg));
             IRBasicValue val = null;
             if(it.expr != null) {
                 it.expr.accept(this);
@@ -248,7 +249,8 @@ public class IRbuilder implements ASTVisitor {
         int tmp_ad = now.in_class ? 1 : 0;
         if(now.in_class) {
             ThisReg = new IRReg(new IRPtrType(curClass,0));
-            curblock.push_back(new IRAllocaInst(ThisReg));
+//            curblock.push_back(new IRAllocaInst(ThisReg));
+            curFunc.push_inst(new IRAllocaInst(ThisReg));
             curblock.push_back(new IRStoreInst(curFunc.arg_list.get(0), ThisReg, curClass));
         }
         for(int i = 0;i < it.type.size();i++) {
@@ -256,7 +258,8 @@ public class IRbuilder implements ASTVisitor {
             var name = it.var.get(i);
             IRType irType = TransType(type);
             IRReg PtrReg = new IRReg(new IRPtrType(irType,0));
-            curblock.push_back(new IRAllocaInst(PtrReg) );
+//            curblock.push_back(new IRAllocaInst(PtrReg) );
+            curFunc.push_inst(new IRAllocaInst(PtrReg));
             curblock.push_back(new IRStoreInst(curFunc.arg_list.get(i + tmp_ad),PtrReg,irType));
             now.put_def_ir(PtrReg,name);
             now.put_def(type, it.var.get(i), it.position);
@@ -282,7 +285,8 @@ public class IRbuilder implements ASTVisitor {
         curFunc.push_back(curblock);
         curblock.terminalInst = new IRJumpInst(curFunc.RetBlock);
         if(!(curFunc.RetType instanceof IRVoidType)) {
-            curblock.push_back(new IRAllocaInst(curFunc.retVal));
+//            curblock.push_back(new IRAllocaInst(curFunc.retVal));
+            curFunc.push_inst(new IRAllocaInst(curFunc.retVal));
         }
 
         if(curFunc.name.equals("main")) {
@@ -443,7 +447,8 @@ public class IRbuilder implements ASTVisitor {
             it.lexp.accept(this);
             IRBlock lastBlock = curblock;
             IRReg rd = new IRReg(new IRPtrType(new IRBoolType(),0));
-            curblock.push_back(new IRAllocaInst(rd));
+//            curblock.push_back(new IRAllocaInst(rd));
+            curFunc.push_inst(new IRAllocaInst(rd));
             curblock.push_back(new IRStoreInst(it.lexp.val,rd,it.lexp.val.type) );
             //run expr without jal and ret
             DestBlock.terminalInst = lastBlock.terminalInst;
@@ -547,7 +552,8 @@ public class IRbuilder implements ASTVisitor {
          */
 
         IRReg reg_i = new IRReg(irIntPtrType);
-        curblock.push_back(new IRAllocaInst(reg_i));
+//        curblock.push_back(new IRAllocaInst(reg_i));
+        curFunc.push_inst(new IRAllocaInst(reg_i));
         curblock.push_back(new IRStoreInst(new IRIntConst(0,new IRIntType()),reg_i,new IRIntType()));
 
         IRBlock ForCheck = new IRBlock("new_array_for_check"), ForStep = new IRBlock("new_array_for_step");

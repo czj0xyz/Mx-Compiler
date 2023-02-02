@@ -246,4 +246,12 @@ public class InstSelector implements IRVisitor{
     public void visit(IRZextInst it){
         curblock.push_back(new ASMMvInst( TransValue(it.val),TransValue(it.rd) ));
     }
+
+    @Override
+    public void visit(IRPhiInst it){};
+
+    @Override
+    public void visit(IRMvInst it) {
+        curblock.push_back(new ASMMvInst(TransValue(it.rs),TransValue(it.rd)));
+    }
 }

@@ -1,6 +1,5 @@
 package IR.IRInst;
 
-import Backend.IRPrinter;
 import IR.IRType.IRPtrType;
 import IR.IRValue.IRReg;
 import IR.IRVisitor;

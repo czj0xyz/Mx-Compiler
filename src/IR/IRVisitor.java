@@ -18,4 +18,6 @@ public interface IRVisitor {
     void visit(IRGEPInst it);
     void visit(IRBitcastInst it);
     void visit(IRZextInst it);
+    void visit(IRPhiInst it);
+    void visit(IRMvInst it);
 }
