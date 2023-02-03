@@ -506,6 +506,51 @@ public class IRbuilder implements ASTVisitor {
             call.arg_list.add(it.rexp.val);
             return;
         }
+        if(it.lexp.val instanceof IRBoolConst && it.rexp.val instanceof IRBoolConst) {
+            boolean res = false, x = ((IRBoolConst)it.lexp.val).val, y = ((IRBoolConst)it.rexp.val).val;
+            switch (it.opstr) {
+                case "eq": res = x == y;break;
+                case "ne": res = x != y;break;
+                case "and": res = x & y;break;
+                case "xor": res = x ^ y;break;
+                case "or": res = x | y;break;
+                default: assert false;
+            }
+            it.val = new IRBoolConst(res,new IRBoolType());
+            return;
+        }else if(it.lexp.val instanceof IRIntConst && it.rexp.val instanceof IRIntConst && !( (((IRIntConst)it.rexp.val).val)==0&&(it.opstr.equals("sdiv")||it.opstr.equals("srem")) ) ){
+            int x = ((IRIntConst)it.lexp.val).val, y = ((IRIntConst)it.rexp.val).val;
+            if(flg) {
+                boolean res = false;
+                switch (it.opstr) {
+                    case "sge": res = x >= y;break;
+                    case "sgt": res = x > y;break;
+                    case "sle": res = x <= y;break;
+                    case "slt": res = x < y;break;
+                    case "eq": res = x == y;break;
+                    case "ne": res = x != y;break;
+                    default: assert false;
+                }
+                it.val = new IRBoolConst(res,new IRBoolType());
+            }else {
+                int res = 0;
+                switch (it.opstr) {
+                    case "add": res = x + y;break;
+                    case "sub": res = x - y;break;
+                    case "mul": res = x * y;break;
+                    case "sdiv": res = x / y;break;
+                    case "srem": res = x % y;break;
+                    case "shl": res = x << y;break;
+                    case "ashr": res = x >> y;break;
+                    case "or": res = x | y;break;
+                    case "and": res = x & y;break;
+                    case "xor": res = x ^ y;break;
+                    default: assert false;
+                }
+                it.val = new IRIntConst(res,new IRIntType());
+            }
+            return;
+        }
         if( flg ) {
             IRReg flg_reg = new IRReg(new IRBitType());
             it.val = new IRReg(new IRBoolType());
@@ -699,9 +744,10 @@ public class IRbuilder implements ASTVisitor {
             assert ((ArrayType)it.rt.type).sz > 0;
             //A.size()
             IRType IntPointType = new IRPtrType(new IRIntType(),0);
-            IRReg ptr = new IRReg(IntPointType);
+            IRBasicValue ptr = new IRReg(IntPointType);
             IRReg final_ptr = new IRReg(IntPointType);
-            curblock.push_back(new IRBitcastInst(it.rt.val,ptr.type,ptr));
+            if(ptr.type.toString().equals(it.rt.val.type.toString()))ptr = it.rt.val;
+            else curblock.push_back(new IRBitcastInst(it.rt.val,ptr.type,ptr));
             IRGEPInst inst = new IRGEPInst(final_ptr, new IRIntType() ,ptr);
             inst.index.add(new IRIntConst(-1,new IRIntType()));
             curblock.push_back(inst);

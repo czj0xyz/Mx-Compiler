@@ -56,6 +56,12 @@ public class InstSelector implements IRVisitor{
         }
     }
 
+    private int getConstVal(IRBasicValue v) {
+        if(v instanceof IRIntConst) return ((IRIntConst)v).val;
+        else if(v instanceof IRNullConst)return 0;
+        else return ((IRBoolConst)v).val ? 1 : 0;
+    }
+
     public InstSelector(ASMModule st,IRModule irModule) {
         this.asmModule = st;
         this.irModule = irModule;
@@ -253,6 +259,8 @@ public class InstSelector implements IRVisitor{
 
     @Override
     public void visit(IRMvInst it) {
-        curblock.push_back(new ASMMvInst(TransValue(it.rs),TransValue(it.rd)));
+        if(it.rs instanceof IRConst && ! (it.rs instanceof  IRStringConst)) {
+            curblock.push_back(new ASMLiInst(TransValue(it.rd),new ASMImm(getConstVal(it.rs))));
+        }else curblock.push_back(new ASMMvInst(TransValue(it.rs),TransValue(it.rd)));
     }
 }
