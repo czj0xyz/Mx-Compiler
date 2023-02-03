@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-public class mem2reg extends IRVisitor {
+public class mem2reg implements IRVisitor {
 
     public IRModule irModule;
 
@@ -25,6 +25,7 @@ public class mem2reg extends IRVisitor {
 
     private void solve() {
         for(var v: irModule.Func) visit(v);
+        visit(irModule.init);
     }
 
     HashMap<Integer, IRReg> St_Reg = new HashMap<>();
@@ -41,23 +42,24 @@ public class mem2reg extends IRVisitor {
 
     }
 
-    HashMap<Integer, IRReg> New_Reg = new HashMap<>();
-    HashMap<Integer, IRReg> Val_Reg = new HashMap<>();
-    HashSet<Integer> Store = new HashSet<>();
+    HashMap<Integer, IRBasicValue> Val_Reg = new HashMap<>();//contains val of alloca reg
+    HashSet<Integer> Store = new HashSet<>();//alloca reg that need to be store
+
+    private IRInst TerminalInst = null;
 
     private LinkedList<IRInst> curblock = new LinkedList<>();
     private void visit(IRBlock block) {
         Store.clear();
         Val_Reg.clear();
-        New_Reg.clear();
 
         curblock = new LinkedList<>();
 
         for(var v: block.list) v.accept(this);
         block.terminalInst.accept(this);
+        block.terminalInst = TerminalInst;
 
         for(var v: Store)
-            curblock.addLast(new IRMvInst(New_Reg.get(v),St_Reg.get(v)));
+            curblock.addLast(new IRMvInst(Val_Reg.get(v),St_Reg.get(v)));
         block.list = curblock;
 
     }
@@ -67,6 +69,34 @@ public class mem2reg extends IRVisitor {
         int id = ((IRReg)val).id;
         if(!Val_Reg.containsKey(id)) return val;
         return Val_Reg.get(id);
+    }
+    @Override
+    public void visit(IRLoadInst it){
+        if(it.src instanceof IRReg && St_Reg.containsKey(((IRReg)it.src).id)) {
+            int index = ((IRReg)it.src).id, index2 = ((IRReg)it.rd).id;
+            if(!Store.contains(index)){
+                Val_Reg.put(index2,St_Reg.get(index));
+            }else {
+                Val_Reg.put(index2,Val_Reg.get(index));
+            }
+        }else {
+            curblock.addLast(new IRLoadInst(it.rd,TransVal(it.src),it.type));
+        }
+    }
+    @Override
+    public void visit(IRStoreInst it){
+        if(it.addr instanceof IRReg && St_Reg.containsKey(((IRReg)it.addr).id)) {
+            int index = ((IRReg)it.addr).id;
+            if(!Store.contains(index))Store.add(index);
+            if(!Val_Reg.containsKey(index)) {
+                assert it.val instanceof IRReg;
+                Val_Reg.put(index, TransVal(it.val) );
+            }else {
+                Val_Reg.replace(index, TransVal(it.val) );
+            }
+        }else {
+            curblock.addLast(new IRStoreInst(TransVal(it.val),TransVal(it.addr),it.type));
+        }
     }
 
     @Override
@@ -79,8 +109,7 @@ public class mem2reg extends IRVisitor {
     }
     @Override
     public void visit(IRBranchInst it) {
-        assert (!(it.condition instanceof IRReg))
-        || (!Val_Reg.containsKey(((IRReg)it.condition).id));
+        TerminalInst = new IRBranchInst(TransVal(it.condition),it.Tblock,it.Fblock);
     }
     @Override
     public void visit(IRCompareInst it) {
@@ -88,28 +117,46 @@ public class mem2reg extends IRVisitor {
     }
     @Override
     public void visit(IRRetInst it) {
-        curblock.addLast(new IRRetInst(TransVal(it.ret)));
+        TerminalInst = new IRRetInst(TransVal(it.ret));
     }
     @Override
-    public void visit(IRLoadInst it){}
+    public void visit(IRAllocaInst it){
+        assert false;
+    }
     @Override
-    public void visit(IRStoreInst it){}
+    public void visit(IRCallInst it){
+        IRCallInst ret = new IRCallInst(it.func_name,it.retType,it.rd);
+        for(var v:it.arg_list) ret.arg_list.add(TransVal(v));
+        curblock.addLast(ret);
+    }
     @Override
-    public void visit(IRAllocaInst it){}
+    public void visit(IRJumpInst it){
+        TerminalInst = new IRJumpInst(it.to);
+    }
     @Override
-    public void visit(IRCallInst it){}
+    public void visit(IRTruncInst it){
+        curblock.addLast(new IRTruncInst(it.dest,TransVal(it.val),it.rd));
+    }
     @Override
-    public void visit(IRJumpInst it){}
+    public void visit(IRGEPInst it){
+        IRGEPInst inst = new IRGEPInst(it.rd,it.type,TransVal(it.src));
+        for(var v:it.index) inst.index.add(TransVal(v));
+        curblock.addLast(inst);
+    }
     @Override
-    public void visit(IRTruncInst it){}
+    public void visit(IRBitcastInst it){
+        curblock.addLast(new IRBitcastInst(TransVal(it.val),it.toType,it.rd));
+    }
     @Override
-    public void visit(IRGEPInst it){}
+    public void visit(IRZextInst it){
+        curblock.addLast(new IRZextInst(it.rd,TransVal(it.val)));
+    }
     @Override
-    public void visit(IRBitcastInst it){}
+    public void visit(IRPhiInst it){
+        assert false;
+    }
     @Override
-    public void visit(IRZextInst it){}
-    @Override
-    public void visit(IRPhiInst it){}
-    @Override
-    public void visit(IRMvInst it){}
+    public void visit(IRMvInst it){
+        assert false;
+    }
 }

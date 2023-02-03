@@ -1,12 +1,14 @@
 package IR.IRInst;
 
+import IR.IRValue.IRBasicValue;
 import IR.IRValue.IRReg;
 import IR.IRVisitor;
 
 public class IRMvInst extends IRInst{
-    public IRReg rs,rd;
+    public IRReg rd;
+    public IRBasicValue rs;
 
-    public IRMvInst(IRReg rs,IRReg rd) {
+    public IRMvInst(IRBasicValue rs,IRReg rd) {
         super();
         this.rs = rs;
         this.rd = rd;

@@ -1,32 +1,3 @@
-/*
-Test Package: Codegen
-Author: Pikachu
-Time: 2020-02-03
-Input:
-=== input ===
-0 0 0 0 0
-0 0 0 0 0
-0 1 0 0 0
-0 0 0 0 0
-0 0 0 0 0
-=== end ===
-Output:
-=== output ===
-1
-=== end ===
-ExitCode: 0
-InstLimit: -1
-Origin Package: Codeforces 263A #48540584
-*/
-class Node{
-    int x;
-    Node f(){
-        return this;
-    }
-};
-int main()
-{
-    Node t = new Node;
-    Node s = t.f();
-	return 0;
+int main(){
+    return 1+2;
 }

@@ -30,7 +30,7 @@ public class IRModule {
     public IRModule() {
         init = new IRFunc("__init_for_global_variables" , new IRVoidType() );
         init.RetBlock = new IRBlock("return");
-        init.RetBlock.push_back(new IRRetInst(new IRConst(new IRVoidType())));
+        init.RetBlock.terminalInst = new IRRetInst(new IRConst(new IRVoidType()));
         init.block.add( new IRBlock("entry",new IRJumpInst(init.RetBlock) ));
         GlobalBlock = init.block.get(0);
     }
