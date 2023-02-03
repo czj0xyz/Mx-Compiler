@@ -189,6 +189,7 @@ public class InstSelector implements IRVisitor{
     }
     @Override
     public void visit(IRAllocaInst it){
+        assert false;
         VirReg Vreg = new VirReg(curFunc.allocReg++);
         curblock.push_back(new ASMCalciInst(sp,new ASMImm(Vreg.index*4),TransValue(it.reg),"addi"));
     }
@@ -223,8 +224,8 @@ public class InstSelector implements IRVisitor{
             ASMReg index = TransValue(it.index.get(0));
             ASMReg sz = new VirReg(curFunc.allocReg++);
             curblock.push_back( new ASMLiInst(sz,new ASMImm(it.type.Size())) );
-            curblock.push_back( new ASMCalcInst(sz,index,index,"mul") );
-            curblock.push_back( new ASMCalcInst(src,index,rd,"add") );
+            curblock.push_back( new ASMCalcInst(sz,index,sz,"mul") );
+            curblock.push_back( new ASMCalcInst(src,sz,rd,"add") );
         }else {
             int index = ((IRIntConst)it.index.get(1)).val;
             IRType irType = ((IRPtrType)it.src.type).LoadType();

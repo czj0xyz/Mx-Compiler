@@ -89,7 +89,6 @@ public class mem2reg implements IRVisitor {
             int index = ((IRReg)it.addr).id;
             if(!Store.contains(index))Store.add(index);
             if(!Val_Reg.containsKey(index)) {
-                assert it.val instanceof IRReg;
                 Val_Reg.put(index, TransVal(it.val) );
             }else {
                 Val_Reg.replace(index, TransVal(it.val) );

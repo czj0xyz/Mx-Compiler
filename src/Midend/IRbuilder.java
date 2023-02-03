@@ -553,7 +553,9 @@ public class IRbuilder implements ASTVisitor {
 
         IRReg reg_i = new IRReg(irIntPtrType);
 //        curblock.push_back(new IRAllocaInst(reg_i));
-        curFunc.push_inst(new IRAllocaInst(reg_i));
+        if(!now.in_class && !now.in_func) {
+            irModule.init.push_inst(new IRAllocaInst(reg_i));
+        }else curFunc.push_inst(new IRAllocaInst(reg_i));
         curblock.push_back(new IRStoreInst(new IRIntConst(0,new IRIntType()),reg_i,new IRIntType()));
 
         IRBlock ForCheck = new IRBlock("new_array_for_check"), ForStep = new IRBlock("new_array_for_step");
