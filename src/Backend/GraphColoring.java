@@ -30,14 +30,15 @@ public class GraphColoring {
     }
 
     void visit(ASMFunc tmp) {
-//        if(!tmp.name.equals("tak"))return;
+//        if(!tmp.name.equals("search"))return;
         curFunc = tmp;
         initial.clear();
         for(int i=1;i<curFunc.allocReg;i++) initial.add(curFunc.get_VirReg(i));
 
         Main();
-
+//        System.out.println(curFunc.allocReg);
 //        for(int i=1;i<curFunc.allocReg;i++) System.out.println(ReplaceReg(curFunc.get_VirReg(i)));
+
 
         for(int i=0; i<curFunc.arg_list.size() ;i++) {
             ASMReg rd = curFunc.arg_list.get(i);
@@ -127,6 +128,11 @@ public class GraphColoring {
         moveList.clear();
         for(var v:initial)  moveList.put(v,new HashSet<>());
 
+        coalescedNodes.clear();
+        colored.clear();
+
+        spilledNodes.clear();
+
         precolored.clear();
         /* sp ra t0-6 s0-11 */
         init_precolor(asmModule.pos.get("ra"));
@@ -134,11 +140,6 @@ public class GraphColoring {
         for(int i=0;i<=6;i++) init_precolor(asmModule.pos.get("t" + i));
         for(int i=0;i<=11;i++) init_precolor(asmModule.pos.get("s" + i));
         for(int i=0;i<=7;i++) init_precolor(asmModule.pos.get("a" + i));
-
-        coalescedNodes.clear();
-        colored.clear();
-
-        spilledNodes.clear();
 
     }
 
@@ -328,8 +329,8 @@ public class GraphColoring {
 
     public void Coalesce() {
         var m = worklistMoves.getFirst();
-        var x = GetAlias(m.rs1);
-        var y = GetAlias(m.rd);
+        var x = GetAlias(m.rd);
+        var y = GetAlias(m.rs1);
         ASMReg u,v;
         if(precolored.contains(y)) {
             u = y; v = x;
@@ -342,7 +343,7 @@ public class GraphColoring {
             constrainedMoves.add(m);
             AddWorkList(u);
             AddWorkList(v);
-        }else if( ((precolored.contains(u) && check(v,u)) || (!precolored.contains(u)&&Conservative(u,v))) && !(check_a(u)) ) {
+        }else if( ((precolored.contains(u) && check(v,u)) || (!precolored.contains(u)&&Conservative(u,v))) && !check_a(u) ) {
             coalescedMoves.add(m);
             Combine(u,v);
             AddWorkList(u);
@@ -353,11 +354,11 @@ public class GraphColoring {
         var Set =  NodeMoves(u);
         for(var mv:Set) {
             ASMReg v;
-            if(GetAlias(mv.rd) == GetAlias(u)) v = GetAlias(mv.rs1);
-            else v = GetAlias(mv.rd);
+            if(GetAlias(mv.rs1) == GetAlias(u)) v = GetAlias(mv.rd);
+            else v = GetAlias(mv.rs1);
             activeMoves.remove(mv);
             frozenMoves.add(mv);
-            if(!MoveRelated(v) && deg.get(v) < K) {
+            if(NodeMoves(v).size()==0 && deg.get(v) < K) {
                 freezeWorklist.remove(v);
                 simplifyWorklist.add(v);
             }
@@ -395,7 +396,6 @@ public class GraphColoring {
             }
             int stcolor = 0;
             while(UsedColor.contains(stcolor))stcolor++;
-//            System.out.println("hv_in: " + now);
             if(stcolor == K) {
                 spilledNodes.add(now);
             }else {
@@ -404,8 +404,9 @@ public class GraphColoring {
                 curFunc.MaxUsed = Math.max(curFunc.MaxUsed,stcolor);
             }
         }
-        for(var v:coalescedNodes)
-            color.replace(v,color.get(GetAlias(v)));
+        for(var v:coalescedNodes) {
+            color.replace(v, color.get(GetAlias(v)));
+        }
     }
 
     HashMap<ASMReg,VirReg> NewVirReg = new HashMap<>();
@@ -414,9 +415,10 @@ public class GraphColoring {
         if(reg == null)return null;
         reg = GetAlias(reg);
         if(reg instanceof PhyReg) return reg;
+//        reg = curFunc.get_VirReg(((VirReg)reg).index);
         if(colored.contains(reg)) return asmModule.pos.get("s" + color.get(reg));
         else if(spilledNodes.contains(reg)) return NewVirReg.get(reg);
-        else assert false;
+        else System.out.println(reg);
         return null;
     }
 
@@ -430,10 +432,17 @@ public class GraphColoring {
 
     void RewriteProgram(HashSet<ASMReg> nodes) {//modified
         NewVirReg.clear();
-        curFunc.usedVirReg = 1 + curFunc.MaxUsed;
-        for(var v:nodes) NewVirReg.put(v,new VirReg(++curFunc.usedVirReg));
+        curFunc.usedVirReg = 2 + curFunc.MaxUsed;
+        for(var v:nodes) NewVirReg.put(v,new VirReg(curFunc.usedVirReg++));
         for(var b:curFunc.list) ReplaceBlock(b);
         ReplaceBlock(curFunc.RetBlock);
+
+//        for(int i=1;i<curFunc.allocReg;i++) {
+//            var v = curFunc.get_VirReg(i);
+//            for(var u: adjList.get(v))
+//                if(ReplaceReg(u)==ReplaceReg(v))
+//                    System.out.println("??");
+//        }
     }
 
     public void Main() {

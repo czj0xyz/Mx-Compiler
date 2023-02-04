@@ -2,6 +2,7 @@ package ASM.ASMInst;
 
 import ASM.Operand.ASMImm;
 import ASM.Operand.ASMReg;
+import ASM.Operand.PhyReg;
 import ASM.Operand.VirReg;
 
 import java.util.ArrayList;
@@ -23,5 +24,4 @@ public abstract class ASMInst {
     }
 
     abstract public String toString();
-
 }

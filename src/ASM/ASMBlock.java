@@ -50,7 +50,7 @@ public class ASMBlock {
         for(var inst: list) {
             for(var v:inst.use)
                 if(!def.contains(v)) use.add(v);
-            for(var v:inst.def) def.add(v);
+            def.addAll(inst.def);
         }
 //        System.out.println(label + ":" + use.size() + ":" + def.size());
     }

@@ -48,7 +48,7 @@ public class ASMFunc {
     }
 
     public int Stack_Size() {//ra s0..11 arg_listReg usedVirReg
-        return (1 + usedVirReg + arg_listReg) << 2;
+        return ( usedVirReg + arg_listReg) << 2;
     }
 
 
