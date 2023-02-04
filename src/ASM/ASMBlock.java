@@ -48,9 +48,9 @@ public class ASMBlock {
         use.clear();
         def.clear();
         for(var inst: list) {
-            for(var v:inst.def) def.add(v);
             for(var v:inst.use)
                 if(!def.contains(v)) use.add(v);
+            for(var v:inst.def) def.add(v);
         }
 //        System.out.println(label + ":" + use.size() + ":" + def.size());
     }
@@ -61,8 +61,7 @@ public class ASMBlock {
             for(var v:use) in.add(v);
         }
         for(var u: succ) {
-            for(var v: u.in)
-                if(!out.contains(v)) out.add(v);
+            for(var v:u.in) out.add(v);
         }
         for(var v: out)if(!def.contains(v) && !in.contains(v))
             in.add(v);

@@ -30,7 +30,7 @@ public class GraphColoring {
     }
 
     void visit(ASMFunc tmp) {
-//        if(!tmp.name.equals("gcd"))return;
+//        if(!tmp.name.equals("tak"))return;
         curFunc = tmp;
         initial.clear();
         for(int i=1;i<curFunc.allocReg;i++) initial.add(curFunc.get_VirReg(i));
@@ -48,6 +48,7 @@ public class GraphColoring {
             }
         }
         curFunc.list.get(0).push_front(new ASMStoreInst(4,asmModule.sp,asmModule.ra,new ASMImm(0) ));
+
         for(int i=0;i<=curFunc.MaxUsed;i++)
             curFunc.list.get(0).push_front(new ASMStoreInst(4,asmModule.sp,asmModule.pos.get("s" + i),new ASMImm(i*4+4) ));
 
@@ -146,7 +147,7 @@ public class GraphColoring {
         if(u == v || adjSet.contains(p))return;
         adjSet.add(p);
         if(precolored.contains(u))return;
-//        System.out.println(u + "\t" + v);
+//        System.out.println(u + "\t\t" + v);
         adjList.get(u).add(v);
         deg.replace(u,deg.get(u)+1);
     }
@@ -223,8 +224,10 @@ public class GraphColoring {
         if(deg.get(rt) == K) {
             HashSet<ASMReg> T = new HashSet<>();
             T.add(rt);
-            for(var v: adjList.get(rt)) T.add(v);
+            var tmpT = Adjacent(rt);
+            for(var v: tmpT) T.add(v);
             EnableMoves(T);
+
             spillWorkList.remove(rt);
 
             if(MoveRelated(rt)) freezeWorklist.add(rt);
@@ -254,7 +257,8 @@ public class GraphColoring {
         ASMReg x = simplifyWorklist.getFirst();
         simplifyWorklist.removeFirst();
         selectStack.push(x);
-        for(var v: adjList.get(x)) DecrementDegree(v);
+        var T = Adjacent(x);
+        for(var v: T) DecrementDegree(v);
     }
 
     void AddWorkList(ASMReg v) {
@@ -316,6 +320,12 @@ public class GraphColoring {
         return true;
     }
 
+    boolean check_a(ASMReg reg) {
+        if(!(reg instanceof PhyReg))return false;
+        if(reg.toString().charAt(0) == 'a')return true;
+        else return false;
+    }
+
     public void Coalesce() {
         var m = worklistMoves.getFirst();
         var x = GetAlias(m.rs1);
@@ -332,7 +342,7 @@ public class GraphColoring {
             constrainedMoves.add(m);
             AddWorkList(u);
             AddWorkList(v);
-        }else if((precolored.contains(u) && check(v,u)) || (!precolored.contains(u)&&Conservative(u,v))) {
+        }else if( ((precolored.contains(u) && check(v,u)) || (!precolored.contains(u)&&Conservative(u,v))) && !(check_a(u)) ) {
             coalescedMoves.add(m);
             Combine(u,v);
             AddWorkList(u);
@@ -363,7 +373,7 @@ public class GraphColoring {
 
     public void SelectSpill() {
         ASMReg v = null;
-        int mxdeg = 0;
+        int mxdeg = -233;
         for(var tmp: spillWorkList)
             if(deg.get(tmp) > mxdeg)
                 mxdeg = deg.get(v = tmp);
@@ -404,8 +414,8 @@ public class GraphColoring {
         if(reg == null)return null;
         reg = GetAlias(reg);
         if(reg instanceof PhyReg) return reg;
-        if(colored.contains(reg))return asmModule.pos.get("s" + color.get(reg));
-        else if(spilledNodes.contains(reg))return NewVirReg.get(reg);
+        if(colored.contains(reg)) return asmModule.pos.get("s" + color.get(reg));
+        else if(spilledNodes.contains(reg)) return NewVirReg.get(reg);
         else assert false;
         return null;
     }
