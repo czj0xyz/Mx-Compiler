@@ -1,6 +1,7 @@
 package ASM.ASMInst;
 
 import ASM.Operand.ASMReg;
+import ASM.Operand.VirReg;
 
 public class ASMLaInst extends ASMInst{
     public String label;
@@ -9,6 +10,7 @@ public class ASMLaInst extends ASMInst{
         super();
         this.label = label;
         this.rd = rd;
+        def.add(rd);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ASM.ASMInst;
 
 import ASM.Operand.ASMReg;
+import ASM.Operand.VirReg;
 
 public class ASMCalcInst extends ASMInst{
     public String op;
@@ -11,6 +12,9 @@ public class ASMCalcInst extends ASMInst{
         this.rs2 = rs2;
         this.rd = rd;
         this.op = op;
+        def.add(rd);
+        use.add(rs1);
+        use.add(rs2);
     }
 
     @Override

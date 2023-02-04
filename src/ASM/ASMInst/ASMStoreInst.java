@@ -2,6 +2,7 @@ package ASM.ASMInst;
 
 import ASM.Operand.ASMImm;
 import ASM.Operand.ASMReg;
+import ASM.Operand.VirReg;
 
 public class ASMStoreInst extends ASMInst{
     public int bit;
@@ -13,6 +14,8 @@ public class ASMStoreInst extends ASMInst{
         this.rs1 = rs1;
         this.rs2 = rs2;
         this.imm = imm;
+        use.add(rs1);
+        use.add(rs2);
     }
 
     @Override

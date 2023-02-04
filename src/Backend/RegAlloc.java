@@ -19,16 +19,25 @@ public class RegAlloc {
     private ASMBlock curblock = null;
     private ASMFunc curFunc = null;
 
-    private PhyReg sp = new PhyReg("sp");
-    private PhyReg ra = new PhyReg("ra");
-    private PhyReg t0 = new PhyReg("t0");
-    private PhyReg t1 = new PhyReg("t1");
-    private PhyReg t2 = new PhyReg("t2");
-    private PhyReg t3 = new PhyReg("t3");
-    private PhyReg a0 = new PhyReg("a0");
+    public PhyReg sp;
+    public PhyReg ra;
+    public PhyReg t0;
+    public PhyReg t1;
+    public PhyReg t2;
+    public PhyReg t3;
+    public PhyReg t4;
+    public PhyReg a0;
 
     public RegAlloc(ASMModule st) {
         this.asmModule = st;
+        this.sp = st.pos.get("sp");
+        this.ra = st.pos.get("ra");
+        this.t0 = st.pos.get("t0");
+        this.t1 = st.pos.get("t1");
+        this.t2 = st.pos.get("t2");
+        this.t3 = st.pos.get("t3");
+        this.t4 = st.pos.get("t4");
+        this.a0 = st.pos.get("a0");
         Reg_Alloc();
     }
 

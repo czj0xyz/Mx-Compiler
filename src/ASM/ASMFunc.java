@@ -16,10 +16,13 @@ public class ASMFunc {
 
     public ASMBlock RetBlock = null;
 
-    public int allocReg;
+    public int allocReg, MaxUsed = 0;
     public int arg_listReg = 0;
 
-    private HashMap<Integer, VirReg> pos = new HashMap<Integer, VirReg>();
+    public int usedVirReg = 0;
+
+    public HashMap<Integer, VirReg> pos = new HashMap<>();
+    public HashMap<Integer, VirReg> Graph_pos = new HashMap<>();
 
 
     public ASMFunc(String name) {
@@ -32,12 +35,20 @@ public class ASMFunc {
     }
 
     public VirReg get_VirReg(IRReg reg) {
-        if(!pos.containsKey(reg.id)) pos.put(reg.id,new VirReg(allocReg++));
+        if (!pos.containsKey(reg.id)) {
+            pos.put(reg.id, new VirReg(allocReg++));
+            Graph_pos.put(allocReg-1,pos.get(reg.id));
+        }
         return pos.get(reg.id);
     }
 
-    public int Stack_Size() {
-        return (allocReg + arg_listReg) << 2;
+    public VirReg get_VirReg(int id) {
+        if(!Graph_pos.containsKey(id)) System.out.println("???? " + id);
+        return Graph_pos.get(id);
+    }
+
+    public int Stack_Size() {//ra s0..11 arg_listReg usedVirReg
+        return (1 + usedVirReg + arg_listReg) << 2;
     }
 
 

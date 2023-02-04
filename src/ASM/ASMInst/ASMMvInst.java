@@ -2,6 +2,7 @@ package ASM.ASMInst;
 
 import ASM.ASMFunc;
 import ASM.Operand.ASMReg;
+import ASM.Operand.VirReg;
 
 public class ASMMvInst extends ASMInst{
 
@@ -9,6 +10,8 @@ public class ASMMvInst extends ASMInst{
         super();
         this.rs1 = rs1;
         this.rd = rd;
+        use.add(rs1);
+        def.add(rd);
     }
 
     @Override
