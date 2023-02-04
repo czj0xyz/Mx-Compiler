@@ -32,6 +32,20 @@ public class GraphColoring {
     void visit(ASMFunc tmp) {
 //        if(!tmp.name.equals("search"))return;
         curFunc = tmp;
+
+        for(int i=0; i<curFunc.arg_list.size() ;i++) {
+            ASMReg rd = curFunc.arg_list.get(i);
+            if(i < 8) {
+                curFunc.list.get(0).push_front( new ASMMvInst(asmModule.pos.get("a" + i),rd) );
+            }else {
+                curFunc.list.get(0).push_front( new ASMLoadInst(4,rd,asmModule.sp,new ASMImm(curFunc.Stack_Size() - 4 * (i-7)) ) );
+            }
+        }
+
+        if(curFunc.retASMReg != null) {
+            curFunc.RetBlock.push_back(new ASMMvInst(curFunc.retASMReg, asmModule.a0));
+        }
+
         initial.clear();
         for(int i=1;i<curFunc.allocReg;i++) initial.add(curFunc.get_VirReg(i));
 
@@ -39,25 +53,12 @@ public class GraphColoring {
 //        System.out.println(curFunc.allocReg);
 //        for(int i=1;i<curFunc.allocReg;i++) System.out.println(ReplaceReg(curFunc.get_VirReg(i)));
 
-
-        for(int i=0; i<curFunc.arg_list.size() ;i++) {
-            ASMReg rd = curFunc.arg_list.get(i);
-            if(i < 8) {
-                curFunc.list.get(0).push_front( new ASMMvInst(new PhyReg("a" +i),ReplaceReg(rd)) );
-            }else {
-                curFunc.list.get(0).push_front( new ASMLoadInst(4,ReplaceReg(rd),asmModule.sp,new ASMImm(curFunc.Stack_Size() - 4 * (i-7)) ) );
-            }
-        }
         curFunc.list.get(0).push_front(new ASMStoreInst(4,asmModule.sp,asmModule.ra,new ASMImm(0) ));
 
         for(int i=0;i<=curFunc.MaxUsed;i++)
             curFunc.list.get(0).push_front(new ASMStoreInst(4,asmModule.sp,asmModule.pos.get("s" + i),new ASMImm(i*4+4) ));
 
         curFunc.list.get(0).push_front(new ASMCalciInst(asmModule.sp,new ASMImm(-curFunc.Stack_Size()),asmModule.sp,"addi"));
-
-        if(curFunc.retASMReg != null) {
-            curFunc.RetBlock.push_back(new ASMMvInst(ReplaceReg(curFunc.retASMReg), asmModule.a0));
-        }
 
         curFunc.RetBlock.push_back(new ASMLoadInst(4,asmModule.ra,asmModule.sp,new ASMImm(0) ));
         for(int i=0;i<=curFunc.MaxUsed;i++)
@@ -189,10 +190,12 @@ public class GraphColoring {
 
 
     ArrayList<ASMMvInst> NodeMoves(ASMReg x) {
-        ArrayList<ASMMvInst> ret = new ArrayList<>();
-        for(var v: moveList.get(x))
-            if(activeMoves.contains(v) || worklistMoves.contains(v))
-                ret.add(v);
+        ArrayList<ASMMvInst> ret = new ArrayList<>(activeMoves);
+        ret.addAll(moveList.get(x));
+        ret.retainAll(worklistMoves);
+//        for(var v: moveList.get(x))
+//            if(activeMoves.contains(v) || worklistMoves.contains(v))
+//                ret.add(v);
         return ret;
     }
 
@@ -281,11 +284,8 @@ public class GraphColoring {
     }
 
     boolean Conservative(ASMReg x,ASMReg y) {
-        HashSet<ASMReg> ret = new HashSet<>();
-        var Set = Adjacent(x);
-        for(var v:Set) ret.add(v);
-        Set = Adjacent(y);
-        for(var v:Set) ret.add(v);
+        HashSet<ASMReg> ret = new HashSet<>(Adjacent(x));
+        ret.addAll(Adjacent(y));
         return Conservative(ret);
     }
 
@@ -300,7 +300,8 @@ public class GraphColoring {
         else spillWorkList.remove(v);
         coalescedNodes.add(v);
         alias.put(v,u);
-        for(var tmp:moveList.get(v))moveList.get(u).add(tmp);
+        moveList.get(u).addAll(moveList.get(v));
+//        for(var tmp:moveList.get(v))moveList.get(u).add(tmp);
         EnableMoves(v);
         var AdjSet = Adjacent(v);
         for(var tmp: AdjSet) {

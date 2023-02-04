@@ -57,14 +57,18 @@ public class ASMBlock {
 
     public boolean Update_live() {
         int in_sz = in.size(), out_sz = out.size();
-        if(in.size() == 0) {
-            for(var v:use) in.add(v);
-        }
-        for(var u: succ) {
-            for(var v:u.in) out.add(v);
-        }
-        for(var v: out)if(!def.contains(v) && !in.contains(v))
-            in.add(v);
+        in.addAll(use);
+        out.removeAll(def);
+        in.addAll(out);
+        for(var to:succ) out.addAll(to.in);
+//        if(in.size() == 0) {
+//            for(var v:use) in.add(v);
+//        }
+//        for(var u: succ) {
+//            for(var v:u.in) out.add(v);
+//        }
+//        for(var v: out)if(!def.contains(v) && !in.contains(v))
+//            in.add(v);
         return in_sz != in.size() || out_sz != out.size();
     }
 }
