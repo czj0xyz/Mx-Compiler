@@ -642,7 +642,7 @@ public class IRbuilder implements ASTVisitor {
         gepinst_2.index.add(val_i_3);
         ForBlock.push_back(gepinst_2);
         ForBlock.push_back(new IRStoreInst(ptr,str_addr,ptr.type));
-        ForBlock.terminalInst = new IRJumpInst(ForStep);
+        curblock.terminalInst = new IRJumpInst(ForStep);
 
         curblock = ForDest;
         ForDest.terminalInst = lastblock.terminalInst;

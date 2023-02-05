@@ -26,7 +26,7 @@ public class Compiler
     public static void main(String[] args) throws Exception{
         try {
 //            InputStream input = new FileInputStream(new File("E:\\sjtu\\Compiler\\Rt\\" +
-//                    "Mx-Compiler\\testcase\\codegen\\t55.mx"));
+//                    "Mx-Compiler\\testcase\\sema\\basic-package\\basic-71.mx"));
             MxCompilerLexer lexer = new MxCompilerLexer(CharStreams.fromStream(System.in));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxComilerErrorListener());
