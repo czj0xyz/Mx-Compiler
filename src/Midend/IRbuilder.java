@@ -439,7 +439,7 @@ public class IRbuilder implements ASTVisitor {
     }
 
     public void visit(binaryExpr it){
-        if(it.lexp.type.getType().equals("bool") && (it.opstr.equals("or") || it.opstr.equals("and"))) {
+        if((it.lexp.type == null || it.lexp.type.getType().equals("bool")) && (it.opstr.equals("or") || it.opstr.equals("and"))) {
             IRBlock FailBlock = new IRBlock("binary_fail"), DestBlock = new IRBlock("binary_dest");
             curFunc.push_back(FailBlock);
             curFunc.push_back(DestBlock);
